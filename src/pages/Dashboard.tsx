@@ -18,44 +18,76 @@ const Default = () => (
 const weekDays = [
   {
     name: "Domingo",
-    start: "09:00",
-    end: "18:00",
+    timeIntervals: [
+      {
+        start: "09:00",
+        end: "18:00",
+      },
+    ],
     enabled: false,
   },
   {
     name: "Segunda",
-    start: "09:00",
-    end: "18:00",
+    timeIntervals: [
+      {
+        start: "09:00",
+        end: "12:00",
+      },
+      {
+        start: "14:00",
+        end: "18:00",
+      },
+    ],
     enabled: true,
   },
   {
     name: "Terça",
-    start: "09:00",
-    end: "18:00",
+    timeIntervals: [
+      {
+        start: "09:00",
+        end: "18:00",
+      },
+    ],
     enabled: true,
   },
   {
     name: "Quarta",
-    start: "09:00",
-    end: "18:00",
+    timeIntervals: [
+      {
+        start: "09:00",
+        end: "18:00",
+      },
+    ],
     enabled: true,
   },
   {
     name: "Quinta",
-    start: "09:00",
-    end: "18:00",
+    timeIntervals: [
+      {
+        start: "09:00",
+        end: "18:00",
+      },
+    ],
     enabled: true,
   },
   {
     name: "Sexta",
-    start: "09:00",
-    end: "18:00",
+    timeIntervals: [
+      {
+        start: "09:00",
+        end: "18:00",
+      },
+    ],
     enabled: true,
   },
   {
     name: "Sábado",
-    start: "09:00",
-    end: "18:00",
+    timeIntervals: [
+      {
+        start: "09:00",
+        end: "18:00",
+      },
+    ],
     enabled: false,
   },
 ];
@@ -84,10 +116,14 @@ const Availability = () => {
                 />
                 <span className="text-md font-medium mt-2">{day.name}</span>
               </div>
-              <div className="flex gap-2 w-1/3">
-                <Input value={day.start} />
-                <span className="self-center">-</span>
-                <Input value={day.end} />
+              <div className="w-1/3 flex flex-col gap-2">
+                {day.timeIntervals.map((interval) => (
+                  <div className="flex gap-2">
+                    <Input value={interval.start} />
+                    <span className="self-center">-</span>
+                    <Input value={interval.end} />
+                  </div>
+                ))}
               </div>
               <div className="w-1/3">
                 <Button variant="ghost" className="p-2 py-1">
