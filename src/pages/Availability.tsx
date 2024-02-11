@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Clock } from "lucide-react";
 
 const availableHours = [
   "00:00",
@@ -55,9 +56,12 @@ function Availability() {
         <Card className="p-10 gap-8">
           <div className="flex flex-col">
             <section>
-              <span className="text-2xl font-bold text-[#1e1e1e] block mb-2">
-                Configure sua disponibilidade
-              </span>
+              <div className="flex gap-2">
+                <Clock />
+                <span className="text-2xl font-bold text-[#1e1e1e] block mb-2 mt-[-3px]">
+                  Configure sua disponibilidade
+                </span>
+              </div>
               <span>
                 Informe a nós quando você normalmente estará disponível para
                 aceitar consultas.
