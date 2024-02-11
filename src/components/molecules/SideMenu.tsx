@@ -44,25 +44,25 @@ function SideMenu({ isOpen, setIsOpen, setSelectedMenuItem }: SideMenuProps) {
                 setSelectedMenuItem("default");
               }}
             >
-              <a className="text-[18px] flex gap-2 p-2">
+              <a className="text-[18px] flex gap-4 p-2">
                 <LayoutDashboard />
-                <span className="font-semibold">Dashboard</span>
+                <span className="font-semibold ml-[-4px]">Dashboard</span>
               </a>
             </li>
             <li className="hover:text-blue-600 p-2">
-              <a className="text-[18px] flex gap-2">
+              <a className="text-[18px] flex gap-3">
                 <CalendarDays />
                 <span className="font-semibold">Agenda</span>
               </a>
             </li>
             <li className="hover:text-blue-600 p-2">
-              <a href="#" className="text-[18px] flex gap-2">
+              <a href="#" className="text-[18px] flex gap-3">
                 <Users />
                 <span className="font-semibold">Clientes</span>
               </a>
             </li>
             <li className="hover:text-blue-600 p-2">
-              <a href="#" className="text-[18px] flex gap-2">
+              <a href="#" className="text-[18px] flex gap-3">
                 <DollarSign className="ml-[-2px]" />
                 <span className="font-semibold">Pagamentos</span>
               </a>
@@ -73,13 +73,13 @@ function SideMenu({ isOpen, setIsOpen, setSelectedMenuItem }: SideMenuProps) {
                 setSelectedMenuItem("availability");
               }}
             >
-              <a className="text-[18px] flex gap-2">
+              <a className="text-[18px] flex gap-3">
                 <Clock className="ml-[-2px]" />
                 <span className="font-semibold">Disponibilidade</span>
               </a>
             </li>
             <li className="hover:text-blue-600 p-2">
-              <a href="#" className="text-[18px] flex gap-2">
+              <a href="#" className="text-[18px] flex gap-3">
                 <LayoutDashboard />
                 <span className="font-semibold">Configurações</span>
               </a>
