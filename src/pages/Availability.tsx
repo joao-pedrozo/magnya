@@ -113,7 +113,7 @@ function Availability() {
                 {weekDays.map((day) => (
                   <li
                     key={day.value}
-                    className="border flex flex-col items-center px-12 py-4 h-full border-l-0 first:border-l"
+                    className="border flex flex-col items-center p-4 h-full border-l-0 first:border-l min-w-[126px]"
                   >
                     <Checkbox checked={day.enabled} />
                     <span className="text-sm text-center">{day.value}</span>
