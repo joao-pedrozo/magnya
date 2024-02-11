@@ -115,7 +115,10 @@ function Availability() {
                     key={day.value}
                     className="border flex flex-col items-center p-4 h-full ml-[-1px] mb-[-1px] min-w-[126px]"
                   >
-                    <Checkbox checked={day.enabled} />
+                    <Checkbox
+                      defaultChecked={day.enabled}
+                      className="data-[state=checked]:bg-blue-700"
+                    />
                     <span className="text-sm text-center">{day.value}</span>
                   </li>
                 ))}
