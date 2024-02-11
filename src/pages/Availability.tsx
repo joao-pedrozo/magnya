@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Clock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const availableHours = [
   "00:00",
@@ -50,6 +51,8 @@ const weekDays = [
 ];
 
 function Availability() {
+  const navigate = useNavigate();
+
   return (
     <div className="flex items-center mt-4 flex-col">
       <div className="flex flex-col">
@@ -124,7 +127,10 @@ function Availability() {
                 ))}
               </ul>
             </section>
-            <Button className="bg-blue-700 hover:bg-blue-600 font-bold mt-4 disabled:opacity-50 transition-all w-fit px-6">
+            <Button
+              className="bg-blue-700 hover:bg-blue-600 font-bold mt-4 disabled:opacity-50 transition-all w-fit px-6"
+              onClick={() => navigate("/dashboard")}
+            >
               Continuar
             </Button>
           </div>
