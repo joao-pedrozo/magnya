@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   CalendarDays,
   Users,
+  DollarSign,
 } from "lucide-react";
 
 import React from "react";
@@ -59,8 +60,8 @@ function Dashboard() {
               </li>
               <li className="hover:text-blue-600 p-2">
                 <a href="#" className="text-[18px] flex gap-2">
-                  <LayoutDashboard />
-                  <span className="font-semibold">Serviços</span>
+                  <DollarSign className="ml-[-2px]" />
+                  <span className="font-semibold">Pagamentos</span>
                 </a>
               </li>
               <li className="hover:text-blue-600 p-2">
