@@ -1,11 +1,7 @@
 function App() {
   return (
-    <div
-      style={{
-        fontFamily: "Raleway",
-      }}
-    >
-      oi
+    <div>
+      <span className="text-4xl font-bold">Olá</span>
     </div>
   );
 }
