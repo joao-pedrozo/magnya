@@ -2,14 +2,21 @@ import { useState } from "react";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { Separator } from "./components/ui/separator";
+import Card from "@/components/atoms/Card";
+import { useNavigate } from "react-router-dom";
 
 function App() {
   const [url, setUrl] = useState("");
+  const navigate = useNavigate();
+
+  const onSubmit = () => {
+    navigate(`/setup/availability`);
+  };
 
   return (
     <div className="flex items-center mt-4 flex-col">
       <div className="flex flex-col">
-        <div className="border p-10 flex items-center max-w-4xl rounded-xl gap-8">
+        <Card className="p-10 max-w-4xl gap-8">
           <div className="flex flex-col">
             <span className="text-4xl font-bold text-[#1e1e1e] block mb-2">
               Bem-vindo(a)!
@@ -38,15 +45,16 @@ function App() {
               <Button
                 className="bg-blue-700 hover:bg-blue-600 font-bold mt-4 disabled:opacity-50 transition-all"
                 disabled={!url}
+                onClick={onSubmit}
               >
                 Continuar
               </Button>
             </div>
           </div>
           <div>
-            <img src="./illustration.png" />
+            <img src="../../illustration.png" />
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );
