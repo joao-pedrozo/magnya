@@ -53,7 +53,7 @@ function Availability() {
   return (
     <div className="flex items-center mt-4 flex-col">
       <div className="flex flex-col">
-        <Card className="p-10 gap-8">
+        <Card className="p-10 gap-16">
           <div className="flex flex-col">
             <section>
               <div className="flex gap-2">
@@ -109,11 +109,11 @@ function Availability() {
               <span className="text-md font-bold block my-4">
                 Dias disponíveis
               </span>
-              <ul className="flex items-center justify-center">
+              <ul className="flex items-center flex-wrap">
                 {weekDays.map((day) => (
                   <li
                     key={day.value}
-                    className="border flex flex-col items-center p-4 h-full border-l-0 first:border-l min-w-[126px]"
+                    className="border flex flex-col items-center p-4 h-full ml-[-1px] mb-[-1px] min-w-[126px]"
                   >
                     <Checkbox checked={day.enabled} />
                     <span className="text-sm text-center">{day.value}</span>
@@ -124,17 +124,14 @@ function Availability() {
             <Button className="bg-blue-700 hover:bg-blue-600 font-bold mt-4 disabled:opacity-50 transition-all w-fit px-6">
               Continuar
             </Button>
-            {/* <section className="flex items-center justify-center gap-2 text-neutral-700 mt-6">
-              <BadgeInfo />
-              <span className="mt-[3px]">
-                Não se preocupe, você poderá alterar essas informações a
-                qualquer momento.
-              </span>
-            </section> */}
           </div>
-          {/* <div>
-            <img src="../../calendar-illustration.png" />
-          </div> */}
+          {/* For responsive design we can just remove this on mobile */}
+          <div className="flex flex-shrink-0">
+            <img
+              src="../../calendar-illustration-2.png"
+              className="max-w-[380px] w-full h-auto"
+            />
+          </div>
         </Card>
       </div>
     </div>
