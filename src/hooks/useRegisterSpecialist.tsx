@@ -37,7 +37,7 @@ const RegisterSpecialistProvider = ({ children }: { children: ReactNode }) => {
       throw new Error("URL already registered");
     }
 
-    await supabase.from("specialists").insert([
+    const specialist = await supabase.from("specialists").insert([
       {
         username: url,
         created_at: new Date(),
