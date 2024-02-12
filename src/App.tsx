@@ -3,14 +3,21 @@ import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { Separator } from "./components/ui/separator";
 import Card from "@/components/atoms/Card";
+import { useRegisterSpecialist } from "@/hooks/useRegisterSpecialist";
 import { useNavigate } from "react-router-dom";
 
 function App() {
-  const [url, setUrl] = useState("");
+  const [url, setUrl2] = useState("");
+  const { create, setUrl } = useRegisterSpecialist();
   const navigate = useNavigate();
 
-  const onSubmit = () => {
-    navigate(`/setup/availability`);
+  const onSubmit = async () => {
+    try {
+      await create();
+      navigate(`/setup/availability`, { state: { url } });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -38,6 +45,7 @@ function App() {
                 <Input
                   className="h-19"
                   onChange={(event) => {
+                    setUrl2(event.target.value);
                     setUrl(event.target.value);
                   }}
                 />
