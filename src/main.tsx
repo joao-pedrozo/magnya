@@ -1,17 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
 import "./index.css";
 import "./globals.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Availability from "./pages/Availability.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import { RegisterSpecialistProvider } from "@/hooks/useRegisterSpecialist";
+import Welcome from "@/pages/Welcome.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/setup/url",
-    element: <App />,
+    element: <Welcome />,
   },
   {
     path: "/setup/availability",

@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Button } from "./components/ui/button";
-import { Input } from "./components/ui/input";
-import { Separator } from "./components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import Card from "@/components/atoms/Card";
 import { useRegisterSpecialist } from "@/hooks/useRegisterSpecialist";
 import { useNavigate } from "react-router-dom";
 
-function App() {
+function Welcome() {
   const [url, setUrl2] = useState("");
   const { create, setUrl } = useRegisterSpecialist();
   const navigate = useNavigate();
@@ -68,4 +68,4 @@ function App() {
   );
 }
 
-export default App;
+export default Welcome;
