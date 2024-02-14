@@ -3,7 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_PROJECT_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 const Default = () => (
   <div>
@@ -93,6 +99,43 @@ const weekDays = [
 ];
 
 const Availability = () => {
+  const [availabilityData, setAvailabilityData] = useState<
+    {
+      start_time: string;
+      end_time: string;
+      weekdays: {
+        id: number;
+        day_name: string;
+      }[];
+    }[]
+  >([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAvailabilityData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("specialist_working_hours")
+          .select("start_time, end_time, weekdays(*)")
+          .eq("specialist_id", 9);
+
+        if (error) {
+          console.error("Error fetching availability data:", error);
+        } else {
+          setAvailabilityData(data);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAvailabilityData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="flex items-center flex-col">
       <div className="flex flex-col">
@@ -108,7 +151,7 @@ const Availability = () => {
         <span className="text-lg font-semibold mt-2">Horários da semana</span>
         <div className="flex flex-col gap-2">
           {weekDays.map((day) => (
-            <div className="flex gap-2">
+            <div className="flex gap-2" key={day.name}>
               <div className="flex items-center gap-2 w-1/3">
                 <Checkbox
                   defaultChecked={day.enabled}
@@ -118,7 +161,10 @@ const Availability = () => {
               </div>
               <div className="w-1/3 flex flex-col gap-2">
                 {day.timeIntervals.map((interval) => (
-                  <div className="flex gap-2">
+                  <div
+                    className="flex gap-2"
+                    key={`${interval.start}${interval.end}`}
+                  >
                     <Input value={interval.start} />
                     <span className="self-center">-</span>
                     <Input value={interval.end} />
