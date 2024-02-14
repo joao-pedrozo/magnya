@@ -21,83 +21,6 @@ const Default = () => (
   </div>
 );
 
-const weekDays = [
-  {
-    name: "Domingo",
-    timeIntervals: [
-      {
-        start: "09:00",
-        end: "18:00",
-      },
-    ],
-    enabled: false,
-  },
-  {
-    name: "Segunda",
-    timeIntervals: [
-      {
-        start: "09:00",
-        end: "12:00",
-      },
-      {
-        start: "14:00",
-        end: "18:00",
-      },
-    ],
-    enabled: true,
-  },
-  {
-    name: "Terça",
-    timeIntervals: [
-      {
-        start: "09:00",
-        end: "18:00",
-      },
-    ],
-    enabled: true,
-  },
-  {
-    name: "Quarta",
-    timeIntervals: [
-      {
-        start: "09:00",
-        end: "18:00",
-      },
-    ],
-    enabled: true,
-  },
-  {
-    name: "Quinta",
-    timeIntervals: [
-      {
-        start: "09:00",
-        end: "18:00",
-      },
-    ],
-    enabled: true,
-  },
-  {
-    name: "Sexta",
-    timeIntervals: [
-      {
-        start: "09:00",
-        end: "18:00",
-      },
-    ],
-    enabled: true,
-  },
-  {
-    name: "Sábado",
-    timeIntervals: [
-      {
-        start: "09:00",
-        end: "18:00",
-      },
-    ],
-    enabled: false,
-  },
-];
-
 const Availability = () => {
   const [availabilityData, setAvailabilityData] = useState<
     {
@@ -106,7 +29,7 @@ const Availability = () => {
       weekdays: {
         id: number;
         day_name: string;
-      }[];
+      };
     }[]
   >([]);
   const [loading, setLoading] = useState(true);
@@ -150,26 +73,23 @@ const Availability = () => {
         </span>
         <span className="text-lg font-semibold mt-2">Horários da semana</span>
         <div className="flex flex-col gap-2">
-          {weekDays.map((day) => (
-            <div className="flex gap-2" key={day.name}>
+          {availabilityData.map((day) => (
+            <div className="flex gap-2" key={day.weekdays.id}>
               <div className="flex items-center gap-2 w-1/3">
                 <Checkbox
-                  defaultChecked={day.enabled}
+                  defaultChecked={true}
                   className="data-[state=checked]:bg-blue-700"
                 />
-                <span className="text-md font-medium mt-2">{day.name}</span>
+                <span className="text-md font-medium mt-2">
+                  {day.weekdays.day_name}
+                </span>
               </div>
               <div className="w-1/3 flex flex-col gap-2">
-                {day.timeIntervals.map((interval) => (
-                  <div
-                    className="flex gap-2"
-                    key={`${interval.start}${interval.end}`}
-                  >
-                    <Input value={interval.start} />
-                    <span className="self-center">-</span>
-                    <Input value={interval.end} />
-                  </div>
-                ))}
+                <div className="flex gap-2">
+                  <Input value={day.start_time} />
+                  <span className="self-center">-</span>
+                  <Input value={day.end_time} />
+                </div>
               </div>
               <div className="w-1/3">
                 <Button variant="ghost" className="p-2 py-1">
