@@ -68,15 +68,29 @@ function Availability() {
   );
 
   const handleContinue = async () => {
+    const allDays = weekDays.map((day) => day.value);
     const selectedWeekdays = weekDays.filter((day) =>
       selectedDays.includes(day.value)
     );
 
-    const workingHours = selectedWeekdays.map((day) => ({
-      day: day.value,
-      start_time: entryTime,
-      end_time: exitTime,
-    }));
+    const workingHours = allDays.map((day) => {
+      const selectedDay = selectedWeekdays.find(
+        (selectedDay) => selectedDay.value === day
+      );
+
+      if (selectedDay) {
+        return {
+          day: selectedDay.value,
+          start_time: entryTime,
+          end_time: exitTime,
+        };
+      }
+      return {
+        day,
+        start_time: null,
+        end_time: null,
+      };
+    });
 
     const specialist = await supabase
       .from("specialists")
@@ -95,8 +109,8 @@ function Availability() {
     const specialistWorkingHoursData = workingHours.map((hours) => ({
       specialist_id: specialist.data![0].id,
       weekday_id: weekdayIds[hours.day.toLowerCase()],
-      start_time: entryTime,
-      end_time: exitTime,
+      start_time: hours.start_time,
+      end_time: hours.end_time,
     }));
 
     await supabase
