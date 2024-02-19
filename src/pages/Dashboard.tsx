@@ -60,11 +60,29 @@ const Availability = () => {
   }
 
   const onAddAvailability = (weekDayId: number) => {
+    const latestAvailability = availabilityData
+      .filter((day) => day.weekdays.id === weekDayId)
+      .sort((a, b) => {
+        const endTimeA = a.end_time.split(":");
+        const endTimeB = b.end_time.split(":");
+        return (
+          parseInt(endTimeB[0]) * 60 +
+          parseInt(endTimeB[1]) -
+          parseInt(endTimeA[0]) * 60 -
+          parseInt(endTimeA[1])
+        );
+      })[0];
+
+    const newStartTime = latestAvailability
+      ? incrementTimeByOneHour(latestAvailability.end_time)
+      : "00:00";
+    const newEndTime = incrementTimeByOneHour(newStartTime);
+
     setAvailabilityData((prev) => [
       ...prev,
       {
-        start_time: "00:00",
-        end_time: "00:00",
+        start_time: newStartTime,
+        end_time: newEndTime,
         weekdays: {
           id: weekDayId,
           day_name:
@@ -73,6 +91,12 @@ const Availability = () => {
         },
       },
     ]);
+  };
+
+  const incrementTimeByOneHour = (time: string) => {
+    const [hours, minutes] = time.split(":");
+    const incrementedHours = parseInt(hours) + 1;
+    return `${incrementedHours.toString().padStart(2, "0")}:${minutes}`;
   };
 
   return (
