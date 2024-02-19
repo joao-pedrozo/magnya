@@ -104,6 +104,24 @@ const Availability = () => {
                 <div>
                   {availabilityData
                     .filter((temp) => temp.weekdays.id === day.weekdays.id)
+                    .sort((a, b) => {
+                      // Assuming start_time and end_time are in HH:mm format
+                      const startTimeA = a.start_time.split(":");
+                      const startTimeB = b.start_time.split(":");
+                      const endTimeA = a.end_time.split(":");
+                      const endTimeB = b.end_time.split(":");
+
+                      // Compare start_time
+                      if (startTimeA[0] !== startTimeB[0]) {
+                        return (
+                          parseInt(startTimeA[0]) - parseInt(startTimeB[0])
+                        );
+                      } else {
+                        return (
+                          parseInt(startTimeA[1]) - parseInt(startTimeB[1])
+                        );
+                      }
+                    })
                     .map((day) => {
                       return (
                         <div key={day.weekdays.id}>
