@@ -59,6 +59,22 @@ const Availability = () => {
     return <div>Loading...</div>;
   }
 
+  const onAddAvailability = (weekDayId: number) => {
+    setAvailabilityData((prev) => [
+      ...prev,
+      {
+        start_time: "00:00",
+        end_time: "00:00",
+        weekdays: {
+          id: weekDayId,
+          day_name:
+            availabilityData.find((day) => day.weekdays.id === weekDayId)
+              ?.weekdays.day_name || "",
+        },
+      },
+    ]);
+  };
+
   return (
     <div className="flex items-center flex-col">
       <div className="flex flex-col">
@@ -85,14 +101,28 @@ const Availability = () => {
                 </span>
               </div>
               <div className="w-1/3 flex flex-col gap-2">
-                <div className="flex gap-2">
-                  <Input value={day.start_time} />
-                  <span className="self-center">-</span>
-                  <Input value={day.end_time} />
+                <div>
+                  {availabilityData
+                    .filter((temp) => temp.weekdays.id === day.weekdays.id)
+                    .map((day) => {
+                      return (
+                        <div key={day.weekdays.id}>
+                          <div className="flex gap-2">
+                            <Input value={day.start_time} />
+                            <span className="self-center">-</span>
+                            <Input value={day.end_time} />
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
               <div className="w-1/3">
-                <Button variant="ghost" className="p-2 py-1">
+                <Button
+                  variant="ghost"
+                  className="p-2 py-1"
+                  onClick={() => onAddAvailability(day.weekdays.id)}
+                >
                   <Plus className="text-zinc-500" />
                 </Button>
               </div>
