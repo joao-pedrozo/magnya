@@ -99,6 +99,18 @@ const Availability = () => {
     return `${incrementedHours.toString().padStart(2, "0")}:${minutes}`;
   };
 
+  const handleAvailabilityChange = (
+    index: number,
+    field: string,
+    value: string
+  ) => {
+    setAvailabilityData((prev) => {
+      const newData = [...prev];
+      newData[index][field] = value;
+      return newData;
+    });
+  };
+
   return (
     <div className="flex items-center flex-col">
       <div className="flex flex-col">
@@ -113,9 +125,9 @@ const Availability = () => {
         </span>
         <span className="text-lg font-semibold mt-2">Horários da semana</span>
         <div className="flex flex-col gap-2">
-          {availabilityData.map((day) => (
+          {availabilityData.map((day, index) => (
             <div className="flex gap-2" key={day.weekdays.id}>
-              <div className="flex items-center gap-2 w-1/3">
+              <div className="flex items-center gap-2">
                 <Checkbox
                   defaultChecked={true}
                   className="data-[state=checked]:bg-blue-700"
@@ -124,7 +136,7 @@ const Availability = () => {
                   {day.weekdays.day_name}
                 </span>
               </div>
-              <div className="w-1/3 flex flex-col gap-2">
+              <div className="flex flex-col gap-2">
                 <div>
                   {availabilityData
                     .filter((temp) => temp.weekdays.id === day.weekdays.id)
@@ -146,20 +158,38 @@ const Availability = () => {
                         );
                       }
                     })
-                    .map((day) => {
+                    .map((day, innerIndex) => {
                       return (
                         <div key={day.weekdays.id}>
                           <div className="flex gap-2">
-                            <Input value={day.start_time} />
+                            <Input
+                              value={day.start_time}
+                              onChange={(e) =>
+                                handleAvailabilityChange(
+                                  innerIndex,
+                                  "start_time",
+                                  e.target.value
+                                )
+                              }
+                            />
                             <span className="self-center">-</span>
-                            <Input value={day.end_time} />
+                            <Input
+                              value={day.end_time}
+                              onChange={(e) =>
+                                handleAvailabilityChange(
+                                  innerIndex,
+                                  "end_time",
+                                  e.target.value
+                                )
+                              }
+                            />
                           </div>
                         </div>
                       );
                     })}
                 </div>
               </div>
-              <div className="w-1/3">
+              <div className="">
                 <Button
                   variant="ghost"
                   className="p-2 py-1"
