@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 import {
   Select,
   SelectContent,
@@ -12,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { supabase } from "@/supabase";
 
 const availableHours = [
   "00:00",
@@ -63,11 +63,6 @@ const availableHours = [
   "23:00",
   "23:30",
 ];
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_PROJECT_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 const Default = () => (
   <div>
