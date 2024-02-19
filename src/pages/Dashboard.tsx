@@ -1,10 +1,68 @@
 import SideMenu from "@/components/molecules/SideMenu";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const availableHours = [
+  "00:00",
+  "00:30",
+  "01:00",
+  "01:30",
+  "02:00",
+  "02:30",
+  "03:00",
+  "03:30",
+  "04:00",
+  "04:30",
+  "05:00",
+  "05:30",
+  "06:00",
+  "06:30",
+  "07:00",
+  "07:30",
+  "08:00",
+  "08:30",
+  "09:00",
+  "09:30",
+  "10:00",
+  "10:30",
+  "11:00",
+  "11:30",
+  "12:00",
+  "12:30",
+  "13:00",
+  "13:30",
+  "14:00",
+  "14:30",
+  "15:00",
+  "15:30",
+  "16:00",
+  "16:30",
+  "17:00",
+  "17:30",
+  "18:00",
+  "18:30",
+  "19:00",
+  "19:30",
+  "20:00",
+  "20:30",
+  "21:00",
+  "21:30",
+  "22:00",
+  "22:30",
+  "23:00",
+  "23:30",
+];
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_PROJECT_URL,
@@ -60,18 +118,9 @@ const Availability = () => {
   }
 
   const onAddAvailability = (weekDayId: number) => {
-    const latestAvailability = availabilityData
-      .filter((day) => day.weekdays.id === weekDayId)
-      .sort((a, b) => {
-        const endTimeA = a.end_time.split(":");
-        const endTimeB = b.end_time.split(":");
-        return (
-          parseInt(endTimeB[0]) * 60 +
-          parseInt(endTimeB[1]) -
-          parseInt(endTimeA[0]) * 60 -
-          parseInt(endTimeA[1])
-        );
-      })[0];
+    const latestAvailability = availabilityData.filter(
+      (day) => day.weekdays.id === weekDayId
+    )[0];
 
     const newStartTime = latestAvailability
       ? incrementTimeByOneHour(latestAvailability.end_time)
@@ -99,15 +148,15 @@ const Availability = () => {
     return `${incrementedHours.toString().padStart(2, "0")}:${minutes}`;
   };
 
-  const handleAvailabilityChange = (
+  const handleSelectValueChange = (
+    value: string,
     index: number,
-    field: string,
-    value: string
+    field: "start_time" | "end_time"
   ) => {
     setAvailabilityData((prev) => {
-      const newData = [...prev];
-      newData[index][field] = value;
-      return newData;
+      const updatedData = [...prev];
+      updatedData[index][field] = value;
+      return updatedData;
     });
   };
 
@@ -140,49 +189,57 @@ const Availability = () => {
                 <div>
                   {availabilityData
                     .filter((temp) => temp.weekdays.id === day.weekdays.id)
-                    .sort((a, b) => {
-                      // Assuming start_time and end_time are in HH:mm format
-                      const startTimeA = a.start_time.split(":");
-                      const startTimeB = b.start_time.split(":");
-                      const endTimeA = a.end_time.split(":");
-                      const endTimeB = b.end_time.split(":");
-
-                      // Compare start_time
-                      if (startTimeA[0] !== startTimeB[0]) {
-                        return (
-                          parseInt(startTimeA[0]) - parseInt(startTimeB[0])
-                        );
-                      } else {
-                        return (
-                          parseInt(startTimeA[1]) - parseInt(startTimeB[1])
-                        );
-                      }
-                    })
-                    .map((day, innerIndex) => {
+                    .map((day2) => {
                       return (
                         <div key={day.weekdays.id}>
                           <div className="flex gap-2">
-                            <Input
-                              value={day.start_time}
-                              onChange={(e) =>
-                                handleAvailabilityChange(
-                                  innerIndex,
-                                  "start_time",
-                                  e.target.value
+                            <Select
+                              value={day2.start_time.slice(0, 5)}
+                              onValueChange={(value) =>
+                                handleSelectValueChange(
+                                  value,
+                                  index,
+                                  "start_time"
                                 )
                               }
-                            />
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  {availableHours.map((hour) => (
+                                    <SelectItem key={hour} value={hour}>
+                                      {hour}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
                             <span className="self-center">-</span>
-                            <Input
-                              value={day.end_time}
-                              onChange={(e) =>
-                                handleAvailabilityChange(
-                                  innerIndex,
-                                  "end_time",
-                                  e.target.value
+                            <Select
+                              value={day2.end_time.slice(0, 5)}
+                              onValueChange={(value) =>
+                                handleSelectValueChange(
+                                  value,
+                                  index,
+                                  "end_time"
                                 )
                               }
-                            />
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  {availableHours.map((hour) => (
+                                    <SelectItem key={hour} value={hour}>
+                                      {hour}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
                           </div>
                         </div>
                       );
