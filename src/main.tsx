@@ -11,6 +11,8 @@ import Availability from "./pages/Availability.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import { RegisterSpecialistProvider } from "@/hooks/useRegisterSpecialist";
 import Welcome from "@/pages/Welcome.tsx";
+import Schedule from "@/pages/Schedule.tsx";
+import Page404 from "@/pages/404.tsx";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +30,18 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Navigate to="/dashboard" />,
+  },
+  {
+    path: "/:username",
+    element: <Schedule />,
+  },
+  {
+    path: "/404",
+    element: <Page404 />,
+  },
+  {
+    path: "*",
+    element: <Navigate to="/404" />,
   },
 ]);
 
