@@ -2,7 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import "./globals.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import Availability from "./pages/Availability.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import { RegisterSpecialistProvider } from "@/hooks/useRegisterSpecialist";
@@ -20,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Dashboard />,
+  },
+  {
+    path: "/",
+    element: <Navigate to="/dashboard" />,
   },
 ]);
 
