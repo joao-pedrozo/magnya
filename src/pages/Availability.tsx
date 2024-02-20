@@ -14,7 +14,7 @@ import { useRegisterSpecialist } from "@/hooks/useRegisterSpecialist";
 import { Clock } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/supabase";
 
 const availableHours = [
   "00:00",
@@ -52,11 +52,6 @@ const weekDays = [
   { value: "Sexta-feira", enabled: true },
   { value: "Sábado", enabled: false },
 ];
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_PROJECT_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
 
 function Availability() {
   const navigate = useNavigate();

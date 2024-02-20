@@ -1,4 +1,3 @@
-import { createClient } from "@supabase/supabase-js";
 import {
   Dispatch,
   ReactNode,
@@ -7,11 +6,7 @@ import {
   useContext,
   useState,
 } from "react";
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_PROJECT_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase } from "@/supabase";
 
 const RegisterSpecialistContext = createContext<{
   url: string;
@@ -37,7 +32,7 @@ const RegisterSpecialistProvider = ({ children }: { children: ReactNode }) => {
       throw new Error("URL already registered");
     }
 
-    const specialist = await supabase.from("specialists").insert([
+    await supabase.from("specialists").insert([
       {
         username: url,
         created_at: new Date(),
