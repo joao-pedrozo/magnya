@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { useState, useEffect } from "react";
+import SectionTitle from "@/components/atoms/SectionTitle";
 
 const availableHours = [
   "00:00",
@@ -147,15 +148,10 @@ function Availability() {
   return (
     <div className="flex items-center flex-col">
       <div className="flex flex-col">
-        <div className="flex gap-2">
-          <h1 className="text-4xl font-bold block mb-2 mt-[-3px] text-blue-600">
-            Configure sua disponibilidade
-          </h1>
-        </div>
-        <span>
-          Informe a nós quando você normalmente estará disponível para
-          atendimentos.
-        </span>
+        <SectionTitle
+          title="Configure sua disponibilidade"
+          subtitle="Configure os horários que você estará disponível para atender seus clientes."
+        />
         <span className="text-lg font-semibold mt-2">Horários da semana</span>
         <div className="flex flex-col gap-2 mt-2">
           {availabilityData.map((day, index) => (
