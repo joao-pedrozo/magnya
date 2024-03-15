@@ -14,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ellipsis, Search } from "lucide-react";
+import { Ellipsis, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -74,6 +74,10 @@ export default function Clients() {
               className="w-fit mb-4 pl-10"
             />
           </div>
+          <Button className="bg-blue-700 gap-2 hover:bg-blue-800">
+            <Plus />
+            <span className="font-semibold">Adicionar cliente</span>
+          </Button>
         </div>
         <Table className="border rounded-xl border-separate border-spacing-x-[12px] border-spacing-y-[8px]">
           <TableHeader>
@@ -114,7 +118,7 @@ export default function Clients() {
                 <TableCell className="text-nowrap">{client.phone}</TableCell>
                 <TableCell className="text-nowrap">{client.CPF}</TableCell>
                 <TableCell className="text-nowrap">10/10/2020</TableCell>
-                <TableCell className="text-nowrap">04/04/2024</TableCell>
+                <TableCell className="text-nowrap">04/04 - 15:00</TableCell>
                 <TableCell className="text-nowrap">
                   <Badge className="bg-green-600 hover:bg-green-500">
                     Ativo
