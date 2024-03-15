@@ -66,7 +66,12 @@ function SideMenu({ isOpen, setIsOpen, setSelectedMenuItem }: SideMenuProps) {
                 <span className="font-semibold">Clientes</span>
               </a>
             </li>
-            <li className="hover:text-blue-600 p-2">
+            <li
+              className="hover:text-blue-600 p-2"
+              onClick={() => {
+                setSelectedMenuItem("billings");
+              }}
+            >
               <a href="#" className="text-[18px] flex gap-3">
                 <DollarSign className="ml-[-2px]" />
                 <span className="font-semibold">Cobranças</span>
