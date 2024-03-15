@@ -49,10 +49,15 @@ function SideMenu({ isOpen, setIsOpen, setSelectedMenuItem }: SideMenuProps) {
                 <span className="font-semibold ml-[-4px]">Dashboard</span>
               </a>
             </li>
-            <li className="hover:text-blue-600 p-2">
+            <li
+              className="hover:text-blue-600 p-2"
+              onClick={() => {
+                setSelectedMenuItem("agenda");
+              }}
+            >
               <a className="text-[18px] flex gap-3">
                 <CalendarDays />
-                <span className="font-semibold">Agenda</span>
+                <span className="font-semibold">Agendamentos</span>
               </a>
             </li>
             <li

@@ -5,7 +5,7 @@ function Default() {
     <SectionTitle
       title="Dashboard"
       subtitle="Bem-vindo ao seu painel de controle. Aqui você pode acompanhar todas as
-    suas atividades."
+      suas atividades."
       className="mb-4"
     />
   );
