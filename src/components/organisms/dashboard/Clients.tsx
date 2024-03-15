@@ -14,9 +14,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ellipsis, Plus, Search } from "lucide-react";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import { CalendarIcon, Ellipsis, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { format } from "date-fns";
 
 const mockClients = [
   {
@@ -46,6 +66,8 @@ const mockClients = [
 ];
 
 export default function Clients() {
+  const [date, setDate] = useState<Date>();
+
   return (
     <div>
       <SectionTitle
@@ -74,10 +96,88 @@ export default function Clients() {
               className="w-fit mb-4 pl-10"
             />
           </div>
-          <Button className="bg-blue-700 gap-2 hover:bg-blue-800">
-            <Plus />
-            <span className="font-semibold">Adicionar cliente</span>
-          </Button>
+          <Dialog>
+            <DialogTrigger>
+              <Button className="bg-blue-700 gap-2 hover:bg-blue-800">
+                <Plus />
+                <span className="font-semibold">Adicionar cliente</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Adicionar cliente</DialogTitle>
+                <DialogDescription>
+                  Preencha o formulário abaixo para adicionar um novo cliente.
+                </DialogDescription>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-6 items-center gap-4">
+                    <Label htmlFor="name" className="text-right text-nowrap">
+                      Nome
+                    </Label>
+                    <Input id="name" className="col-span-3" />
+                  </div>
+                  <div className="grid grid-cols-6 items-center gap-4">
+                    <Label htmlFor="email" className="text-right text-nowrap">
+                      Telefone
+                    </Label>
+                    <Input id="Telefone" className="col-span-3" />
+                  </div>
+                  <div className="grid grid-cols-6 items-center gap-4">
+                    <Label htmlFor="CPF" className="text-right text-nowrap">
+                      CPF
+                    </Label>
+                    <Input id="cpf" className="col-span-3" />
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex gap-4 items-center">
+                      <span className="text-nowrap">Escolha um dia: </span>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "max-w-[680px] justify-start text-left font-normal",
+                              !date && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? (
+                              format(date, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Label htmlFor="email" className="text-right text-nowrap">
+                      Escolha um horário
+                    </Label>
+                    <Input id="email" className="col-span-3" />
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Label htmlFor="email" className="text-right text-nowrap">
+                      Defina uma frequência
+                    </Label>
+                    <Input id="email" className="col-span-3" />
+                  </div>
+                  <Button className="bg-blue-700 gap-2 hover:bg-blue-800">
+                    <span className="font-semibold ">Adicionar cliente</span>
+                  </Button>
+                </div>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </div>
         <Table className="border rounded-xl border-separate border-spacing-x-[12px] border-spacing-y-[8px]">
           <TableHeader>
