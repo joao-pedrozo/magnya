@@ -98,10 +98,6 @@ function Availability() {
     fetchAvailabilityData();
   }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
   const onAddAvailability = (weekDayId: number) => {
     const latestAvailability = availabilityData.filter(
       (day) => day.weekdays.id === weekDayId
@@ -153,82 +149,90 @@ function Availability() {
           subtitle="Configure os horários que você estará disponível para atender seus clientes."
         />
         <span className="text-lg font-semibold mt-2">Horários da semana</span>
-        <div className="flex flex-col gap-2 mt-2">
-          {availabilityData.map((day, index) => (
-            <div className="flex gap-2" key={day.weekdays.id}>
-              <div className="flex items-center gap-2 w-[180px]">
-                <Checkbox
-                  defaultChecked={true}
-                  className="data-[state=checked]:bg-blue-700"
-                />
-                <span className="text-lg font-medium mt-2">
-                  {day.weekdays.day_name}
-                </span>
-              </div>
-              <div className="flex flex-col gap-2">
-                {availabilityData
-                  .filter((temp) => temp.weekdays.id === day.weekdays.id)
-                  .map((day2) => {
-                    return (
-                      <div
-                        key={`${day.weekdays.id}-${day.start_time}-${day.end_time}`}
-                        className="flex gap-2"
-                      >
-                        <Select
-                          value={day2.start_time.slice(0, 5)}
-                          onValueChange={(value) =>
-                            handleSelectValueChange(value, index, "start_time")
-                          }
+        {loading ? (
+          <span>Carregando...</span>
+        ) : (
+          <div className="flex flex-col gap-2 mt-2">
+            {availabilityData.map((day, index) => (
+              <div className="flex gap-2" key={day.weekdays.id}>
+                <div className="flex items-center gap-2 w-[180px]">
+                  <Checkbox
+                    defaultChecked={true}
+                    className="data-[state=checked]:bg-blue-700"
+                  />
+                  <span className="text-lg font-medium mt-2">
+                    {day.weekdays.day_name}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {availabilityData
+                    .filter((temp) => temp.weekdays.id === day.weekdays.id)
+                    .map((day2) => {
+                      return (
+                        <div
+                          key={`${day.weekdays.id}-${day.start_time}-${day.end_time}`}
+                          className="flex gap-2"
                         >
-                          <SelectTrigger className="text-lg">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              {availableHours.map((hour) => (
-                                <SelectItem key={hour} value={hour}>
-                                  {hour}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        <span className="self-center">-</span>
-                        <Select
-                          value={day2.end_time.slice(0, 5)}
-                          onValueChange={(value) =>
-                            handleSelectValueChange(value, index, "end_time")
-                          }
-                        >
-                          <SelectTrigger className="text-lg">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              {availableHours.map((hour) => (
-                                <SelectItem key={hour} value={hour}>
-                                  {hour}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    );
-                  })}
+                          <Select
+                            value={day2.start_time.slice(0, 5)}
+                            onValueChange={(value) =>
+                              handleSelectValueChange(
+                                value,
+                                index,
+                                "start_time"
+                              )
+                            }
+                          >
+                            <SelectTrigger className="text-lg">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {availableHours.map((hour) => (
+                                  <SelectItem key={hour} value={hour}>
+                                    {hour}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          <span className="self-center">-</span>
+                          <Select
+                            value={day2.end_time.slice(0, 5)}
+                            onValueChange={(value) =>
+                              handleSelectValueChange(value, index, "end_time")
+                            }
+                          >
+                            <SelectTrigger className="text-lg">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {availableHours.map((hour) => (
+                                  <SelectItem key={hour} value={hour}>
+                                    {hour}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      );
+                    })}
+                </div>
+                <div className="">
+                  <Button
+                    variant="ghost"
+                    className="p-2 py-1"
+                    onClick={() => onAddAvailability(day.weekdays.id)}
+                  >
+                    <Plus className="text-zinc-500" />
+                  </Button>
+                </div>
               </div>
-              <div className="">
-                <Button
-                  variant="ghost"
-                  className="p-2 py-1"
-                  onClick={() => onAddAvailability(day.weekdays.id)}
-                >
-                  <Plus className="text-zinc-500" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
