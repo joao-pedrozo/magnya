@@ -55,7 +55,12 @@ function SideMenu({ isOpen, setIsOpen, setSelectedMenuItem }: SideMenuProps) {
                 <span className="font-semibold">Agenda</span>
               </a>
             </li>
-            <li className="hover:text-blue-600 p-2">
+            <li
+              className="hover:text-blue-600 p-2"
+              onClick={() => {
+                setSelectedMenuItem("clients");
+              }}
+            >
               <a href="#" className="text-[18px] flex gap-3">
                 <Users />
                 <span className="font-semibold">Clientes</span>
@@ -64,7 +69,7 @@ function SideMenu({ isOpen, setIsOpen, setSelectedMenuItem }: SideMenuProps) {
             <li className="hover:text-blue-600 p-2">
               <a href="#" className="text-[18px] flex gap-3">
                 <DollarSign className="ml-[-2px]" />
-                <span className="font-semibold">Pagamentos</span>
+                <span className="font-semibold">Cobranças</span>
               </a>
             </li>
             <li

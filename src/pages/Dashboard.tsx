@@ -1,5 +1,6 @@
 import Availability from "@/components/organisms/dashboard/Availability";
 import Default from "@/components/organisms/dashboard/Default";
+import Clients from "@/components/organisms/dashboard/Clients";
 import Template from "@/components/templates/Dashboard";
 import { useState } from "react";
 
@@ -13,6 +14,7 @@ function Dashboard() {
     >
       {selectedMenuItem === "default" && <Default />}
       {selectedMenuItem === "availability" && <Availability />}
+      {selectedMenuItem === "clients" && <Clients />}
     </Template>
   );
 }
