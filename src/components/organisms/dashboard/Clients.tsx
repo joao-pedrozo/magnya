@@ -9,7 +9,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Ellipsis } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Ellipsis, Pen } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const mockClients = [
   {
@@ -93,7 +102,22 @@ export default function Clients() {
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <Ellipsis className="text-black" size={22} />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <Ellipsis className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem className="font-semibold text-blue-700 cursor-pointer">
+                        Editar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="font-semibold text-red-700 cursor-pointer">
+                        Remover
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))}
