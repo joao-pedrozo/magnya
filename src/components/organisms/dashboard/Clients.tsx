@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Ellipsis } from "lucide-react";
 
 const mockClients = [
   {
@@ -46,7 +47,7 @@ export default function Clients() {
         className="mb-4"
       />
       <div className="rounded-md">
-        <Table className="text-md border rounded-xl border-separate border-spacing-x-[12px] border-spacing-y-[8px]">
+        <Table className="border rounded-xl border-separate border-spacing-x-[12px] border-spacing-y-[8px]">
           <TableHeader>
             <TableRow>
               <TableHead className="text-zinc-500 font-medium text-nowrap">
@@ -68,7 +69,10 @@ export default function Clients() {
                 Próxima sessão
               </TableHead>
               <TableHead className="text-zinc-500 font-medium text-nowrap">
-                Último Pagamento
+                Status
+              </TableHead>
+              <TableHead className="text-zinc-500 font-medium text-nowrap">
+                Ações
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -85,8 +89,11 @@ export default function Clients() {
                 <TableCell className="text-nowrap">04/04/2024</TableCell>
                 <TableCell className="text-nowrap">
                   <Badge className="bg-green-600 hover:bg-green-500">
-                    Pago
+                    Ativo
                   </Badge>
+                </TableCell>
+                <TableCell>
+                  <Ellipsis className="text-black" size={22} />
                 </TableCell>
               </TableRow>
             ))}
