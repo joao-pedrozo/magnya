@@ -4,7 +4,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -13,12 +12,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ellipsis, Pen } from "lucide-react";
+import { Ellipsis, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const mockClients = [
   {
@@ -56,6 +54,27 @@ export default function Clients() {
         className="mb-4"
       />
       <div className="rounded-md">
+        <div className="flex justify-between text-md">
+          {/* <div className="flex flex-col">
+            <div className="flex gap-1 items-center">
+              <span className="text-[18px] font-medium ">Total</span>
+            </div>
+            <div className="flex gap-1 items-center">
+              <span className="text-[16px] text-zinc-800">12 clientes</span>
+            </div>
+          </div> */}
+          <div className="relative">
+            <Search
+              className="absolute top-[9px] left-[12px] text-zinc-500"
+              size={20}
+            />
+            <Input
+              placeholder="Procure por nome"
+              type="text"
+              className="w-fit mb-4 pl-10"
+            />
+          </div>
+        </div>
         <Table className="border rounded-xl border-separate border-spacing-x-[12px] border-spacing-y-[8px]">
           <TableHeader>
             <TableRow>
@@ -110,10 +129,10 @@ export default function Clients() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem className="font-semibold text-blue-700 cursor-pointer">
+                      <DropdownMenuItem className="font-semibold text-blue-500 cursor-pointer">
                         Editar
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="font-semibold text-red-700 cursor-pointer">
+                      <DropdownMenuItem className="font-semibold text-red-400 cursor-pointer">
                         Remover
                       </DropdownMenuItem>
                     </DropdownMenuContent>
