@@ -110,15 +110,13 @@ export default function Clients() {
 
       console.log("zX");
 
-      const appointmentRecurrency = await supabase
-        .from("appointment_recurrency")
-        .insert({
-          client_id: results[0].id,
-          specialist_id: mockSession.id,
-          recurrency: data.recurrency,
-        });
+      await supabase.from("appointment_recurrency").insert({
+        client_id: results[0].id,
+        specialist_id: mockSession.id,
+        recurrency: data.recurrency,
+      });
 
-      const appointment = await supabase.from("appointments").insert({
+      await supabase.from("appointments").insert({
         client_id: results[0].id,
         specialist_id: mockSession.id,
         date: data.date,
