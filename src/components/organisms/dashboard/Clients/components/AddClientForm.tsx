@@ -87,13 +87,16 @@ export default function AddClientForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4 grid grid-cols-2 gap-4"
+      >
         <FormField
           control={form.control}
           name="firstName"
           render={({ field }) => (
             <FormItem className="flex items-center gap-3">
-              <FormLabel className="min-w-[85px] text-end">Nome</FormLabel>
+              <FormLabel className="text-end">Nome</FormLabel>
               <FormControl>
                 <Input placeholder="Pedro" {...field} />
               </FormControl>
@@ -105,7 +108,7 @@ export default function AddClientForm() {
           name="lastName"
           render={({ field }) => (
             <FormItem className="flex items-center gap-3">
-              <FormLabel className="min-w-[85px] text-end">Nome</FormLabel>
+              <FormLabel className="text-end">Sobrenome</FormLabel>
               <FormControl>
                 <Input placeholder="Santos" {...field} />
               </FormControl>
@@ -117,7 +120,7 @@ export default function AddClientForm() {
           name="email"
           render={({ field }) => (
             <FormItem className="flex items-center gap-3">
-              <FormLabel className="min-w-[85px] text-end">Email</FormLabel>
+              <FormLabel className="text-end">Email</FormLabel>
               <FormControl>
                 <Input placeholder="E-mail" {...field} />
               </FormControl>
@@ -129,7 +132,7 @@ export default function AddClientForm() {
           name="phone"
           render={({ field }) => (
             <FormItem className="flex items-center gap-3">
-              <FormLabel className="min-w-[85px] text-end">Telefone</FormLabel>
+              <FormLabel className="text-end">Telefone</FormLabel>
               <FormControl>
                 <Input placeholder="(41) 9 9999-9999" {...field} />
               </FormControl>
@@ -141,7 +144,7 @@ export default function AddClientForm() {
           name="CPF"
           render={({ field }) => (
             <FormItem className="flex items-center gap-3">
-              <FormLabel className="min-w-[85px] text-end">CPF</FormLabel>
+              <FormLabel className="text-end">CPF</FormLabel>
               <FormControl>
                 <Input placeholder="123.456.789-00" {...field} />
               </FormControl>
@@ -153,7 +156,7 @@ export default function AddClientForm() {
           name="date"
           render={() => (
             <FormItem className="flex items-center gap-3">
-              <FormLabel className="min-w-[85px] text-end">
+              <FormLabel className="text-end text-nowrap">
                 Dia da sessão
               </FormLabel>
               <FormControl>
@@ -207,7 +210,7 @@ export default function AddClientForm() {
           name="time"
           render={({ field }) => (
             <FormItem className="flex items-center gap-3">
-              <FormLabel className="min-w-[85px] text-end">Horário</FormLabel>
+              <FormLabel className="text-end">Horário</FormLabel>
               <FormControl>
                 <Input placeholder="15:00" {...field} />
               </FormControl>
@@ -219,9 +222,7 @@ export default function AddClientForm() {
           name="recurrency"
           render={({ field }) => (
             <FormItem className="flex items-center gap-3">
-              <FormLabel className="min-w-[85px] text-end">
-                Recorrência
-              </FormLabel>
+              <FormLabel className=" text-end">Recorrência</FormLabel>
               <FormControl>
                 <Input placeholder="Semanal" {...field} />
               </FormControl>

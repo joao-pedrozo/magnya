@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import ClientsListing from "./components/ClientsListing";
+import AddClientForm from "./components/AddClientForm";
 
 export default function Clients() {
   return (
@@ -43,13 +44,14 @@ export default function Clients() {
                 <span className="font-semibold">Adicionar cliente</span>
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-[760px]">
               <DialogHeader>
                 <DialogTitle>Adicionar cliente</DialogTitle>
                 <DialogDescription>
                   Preencha o formulário abaixo para adicionar um novo cliente.
                 </DialogDescription>
               </DialogHeader>
+              <AddClientForm />
             </DialogContent>
           </Dialog>
         </div>
