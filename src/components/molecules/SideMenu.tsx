@@ -93,7 +93,12 @@ function SideMenu({ isOpen, setIsOpen, setSelectedMenuItem }: SideMenuProps) {
                 <span className="font-semibold">Disponibilidade</span>
               </a>
             </li>
-            <li className="hover:text-blue-600 p-2">
+            <li
+              className="hover:text-blue-600 p-2"
+              onClick={() => {
+                setSelectedMenuItem("configuration");
+              }}
+            >
               <a href="#" className="text-[18px] flex gap-3">
                 <LayoutDashboard />
                 <span className="font-semibold">Configurações</span>
