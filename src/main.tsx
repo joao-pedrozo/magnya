@@ -13,6 +13,15 @@ import { RegisterSpecialistProvider } from "@/hooks/useRegisterSpecialist";
 import Welcome from "@/pages/Welcome.tsx";
 import Schedule from "@/pages/Schedule.tsx";
 import Page404 from "@/pages/404.tsx";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -47,8 +56,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RegisterSpecialistProvider>
-      <RouterProvider router={router} />
-    </RegisterSpecialistProvider>
+    <QueryClientProvider client={queryClient}>
+      <RegisterSpecialistProvider>
+        <RouterProvider router={router} />
+      </RegisterSpecialistProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
