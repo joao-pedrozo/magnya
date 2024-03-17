@@ -10,7 +10,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, CheckIcon, ChevronDown } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -21,6 +21,13 @@ import {
 import { supabase } from "@/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
+import {
+  CommandGroup,
+  CommandItem,
+  CommandList,
+  Command,
+} from "@/components/ui/command";
 
 const formSchema = z.object({
   firstName: z.string().min(1),
@@ -36,6 +43,12 @@ const formSchema = z.object({
 const mockSession = {
   id: 1,
 };
+
+const languages = [
+  { label: "Semanal", value: "weekly" },
+  { label: "Quinzenal", value: "biweekly" },
+  { label: "Único", value: "one-time" },
+] as const;
 
 export default function AddClientForm() {
   const clientMutation = useMutation({
@@ -221,11 +234,56 @@ export default function AddClientForm() {
           control={form.control}
           name="recurrency"
           render={({ field }) => (
-            <FormItem className="flex items-center gap-3">
-              <FormLabel className=" text-end">Recorrência</FormLabel>
-              <FormControl>
-                <Input placeholder="Semanal" {...field} />
-              </FormControl>
+            <FormItem className="flex flex-col">
+              <FormLabel>Recorrência</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className={cn(
+                        "w-[230px] justify-between",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value
+                        ? languages.find(
+                            (language) => language.value === field.value
+                          )?.label
+                        : "Selecione a recorrência"}
+                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandList>
+                      <CommandGroup>
+                        {languages.map((language) => (
+                          <CommandItem
+                            value={language.label}
+                            key={language.value}
+                            onSelect={() => {
+                              form.setValue("recurrency", language.value);
+                            }}
+                          >
+                            {language.label}
+                            <CheckIcon
+                              className={cn(
+                                "ml-auto h-4 w-4",
+                                language.value === field.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </FormItem>
           )}
         />
