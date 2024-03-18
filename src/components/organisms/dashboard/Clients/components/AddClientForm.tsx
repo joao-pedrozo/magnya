@@ -28,8 +28,7 @@ import {
   CommandList,
   Command,
 } from "@/components/ui/command";
-
-import ReactInputMask from "react-input-mask";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   firstName: z.string().min(1),
@@ -52,7 +51,15 @@ const languages = [
   { label: "Único", value: "one-time" },
 ] as const;
 
-export default function AddClientForm() {
+interface AddClientFormProps {
+  setIsFormDialogOpen: (state: boolean) => void;
+}
+
+export default function AddClientForm({
+  setIsFormDialogOpen,
+}: AddClientFormProps) {
+  const { toast } = useToast();
+
   const clientMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       const { data: results } = await supabase
@@ -82,7 +89,13 @@ export default function AddClientForm() {
         value: 100,
       });
     },
-    onSuccess: () => {},
+    onSuccess: () => {
+      toast({
+        title: "Cliente adicionado com sucesso!",
+        description: "O cliente foi adicionado com sucesso.",
+      });
+      setIsFormDialogOpen(false);
+    },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {

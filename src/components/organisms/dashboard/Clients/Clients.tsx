@@ -1,5 +1,7 @@
-import SectionTitle from "@/components/atoms/SectionTitle";
+import { useState } from "react";
+import { Plus, Search } from "lucide-react";
 
+import SectionTitle from "@/components/atoms/SectionTitle";
 import {
   Dialog,
   DialogContent,
@@ -8,8 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
-import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -17,6 +17,8 @@ import ClientsListing from "./components/ClientsListing";
 import AddClientForm from "./components/AddClientForm";
 
 export default function Clients() {
+  const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
+
   return (
     <div>
       <SectionTitle
@@ -37,8 +39,11 @@ export default function Clients() {
               className="w-fit mb-4 pl-10"
             />
           </div>
-          <Dialog>
-            <DialogTrigger asChild>
+          <Dialog
+            onOpenChange={(state) => setIsFormDialogOpen(state)}
+            open={isFormDialogOpen}
+          >
+            <DialogTrigger onClick={() => setIsFormDialogOpen(true)} asChild>
               <Button className="bg-blue-700 gap-2 hover:bg-blue-800">
                 <Plus />
                 <span className="font-semibold">Adicionar cliente</span>
@@ -51,7 +56,7 @@ export default function Clients() {
                   Preencha o formulário abaixo para adicionar um novo cliente.
                 </DialogDescription>
               </DialogHeader>
-              <AddClientForm />
+              <AddClientForm setIsFormDialogOpen={setIsFormDialogOpen} />
             </DialogContent>
           </Dialog>
         </div>
