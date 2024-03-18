@@ -1,5 +1,5 @@
 import { Ellipsis } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,38 +19,35 @@ import {
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/supabase";
 import { Tables } from "database.types";
-
-const mockClients = [
-  {
-    nome: "John Doe",
-    email: "johndoe@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "123.456.780-9",
-  },
-  {
-    nome: "Alice Smith",
-    email: "alicesmith@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "789.123.780-9",
-  },
-  {
-    nome: "Bob Johnson",
-    email: "bobjohnson@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "987.654.321-0",
-  },
-  {
-    nome: "Emma Davis",
-    email: "emmadavis@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "654.321.987-0",
-  },
-];
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ClientsListing() {
+  const { toast } = useToast();
+
   const { data, isLoading } = useQuery({
     queryKey: ["clients"],
     queryFn: async () => await supabase.from("clients").select("*"),
+  });
+
+  const deleteClientMutation = useMutation({
+    mutationFn: async (cpf: string) =>
+      await supabase.from("clients").delete().match({ cpf }),
+    onSuccess: () => {
+      toast({
+        title: "Cliente removido com sucesso.",
+      });
+    },
   });
 
   if (isLoading || !data) {
@@ -115,12 +112,44 @@ export default function ClientsListing() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem className="font-semibold text-blue-500 cursor-pointer">
-                      Editar
+                    <DropdownMenuItem>
+                      <span className="font-semibold text-blue-500 cursor-pointer">
+                        Editar
+                      </span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="font-semibold text-red-400 cursor-pointer">
-                      Remover
-                    </DropdownMenuItem>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <span className="font-semibold text-red-400 cursor-pointer text-sm ml-2">
+                          Excluir
+                        </span>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Tem certeza que deseja excluir?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta ação não pode ser desfeita.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel
+                            disabled={deleteClientMutation.isPending}
+                          >
+                            Cancelar
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            className="bg-red-700 hover:bg-red-800"
+                            disabled={deleteClientMutation.isPending}
+                            onClick={() => {
+                              deleteClientMutation.mutate(client.cpf!);
+                            }}
+                          >
+                            Continuar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
