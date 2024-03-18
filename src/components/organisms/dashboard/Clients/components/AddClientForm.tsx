@@ -29,10 +29,12 @@ import {
   Command,
 } from "@/components/ui/command";
 
+import ReactInputMask from "react-input-mask";
+
 const formSchema = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
-  email: z.string().min(1),
+  email: z.string().min(1).email(),
   phone: z.string().min(1),
   CPF: z.string().min(1),
   date: z.string().min(1),
@@ -53,8 +55,6 @@ const languages = [
 export default function AddClientForm() {
   const clientMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
-      console.log("z");
-
       const { data: results } = await supabase
         .from("clients")
         .insert({
@@ -67,8 +67,6 @@ export default function AddClientForm() {
         .select();
 
       if (!results?.length) return;
-
-      console.log("zX");
 
       await supabase.from("appointment_recurrency").insert({
         client_id: results[0].id,
@@ -95,6 +93,12 @@ export default function AddClientForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       date: new Date().toDateString(),
+      lastName: "",
+      firstName: "",
+      email: "",
+      phone: "",
+      CPF: "",
+      time: "",
     },
   });
 
@@ -287,14 +291,7 @@ export default function AddClientForm() {
             </FormItem>
           )}
         />
-
-        <Button
-          type="submit"
-          className="bg-blue-700 hover:bg-blue-800"
-          onClick={() => {
-            console.log(form.formState.errors);
-          }}
-        >
+        <Button type="submit" className="bg-blue-700 hover:bg-blue-800">
           Adicionar
         </Button>
       </form>
