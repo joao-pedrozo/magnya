@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CalendarIcon, CheckIcon, ChevronDown } from "lucide-react";
 import {
   Form,
@@ -59,6 +59,7 @@ export default function AddClientForm({
   setIsFormDialogOpen,
 }: AddClientFormProps) {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const clientMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
@@ -99,7 +100,9 @@ export default function AddClientForm({
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    clientMutation.mutate(values);
+    clientMutation.mutate(values, {
+      onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients"] }),
+    });
   }
 
   const form = useForm<z.infer<typeof formSchema>>({

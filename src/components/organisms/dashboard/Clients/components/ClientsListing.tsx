@@ -1,5 +1,5 @@
 import { Ellipsis } from "lucide-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -40,6 +40,8 @@ export default function ClientsListing() {
     queryFn: async () => await supabase.from("clients").select("*"),
   });
 
+  const queryClient = useQueryClient();
+
   const deleteClientMutation = useMutation({
     mutationFn: async (cpf: string) =>
       await supabase.from("clients").delete().match({ cpf }),
@@ -47,6 +49,8 @@ export default function ClientsListing() {
       toast({
         title: "Cliente removido com sucesso.",
       });
+
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
     },
   });
 
