@@ -1,4 +1,5 @@
 import { Ellipsis } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,6 +17,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/supabase";
+import { Tables } from "database.types";
 
 const mockClients = [
   {
@@ -45,6 +48,15 @@ const mockClients = [
 ];
 
 export default function ClientsListing() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["clients"],
+    queryFn: async () => await supabase.from("clients").select("*"),
+  });
+
+  if (isLoading || !data) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <Table className="border rounded-xl border-separate border-spacing-x-[12px] border-spacing-y-[8px]">
       <TableHeader>
@@ -76,39 +88,45 @@ export default function ClientsListing() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {mockClients.map((client) => (
-          <TableRow key={client.CPF} className="text-black text-nowrap">
-            <TableCell className="font-medium text-nowrap">
-              {client.nome}
-            </TableCell>
-            <TableCell className="text-nowrap">{client.email}</TableCell>
-            <TableCell className="text-nowrap">{client.phone}</TableCell>
-            <TableCell className="text-nowrap">{client.CPF}</TableCell>
-            <TableCell className="text-nowrap">10/10/2020</TableCell>
-            <TableCell className="text-nowrap">04/04 - 15:00</TableCell>
-            <TableCell className="text-nowrap">
-              <Badge className="bg-green-600 hover:bg-green-500">Ativo</Badge>
-            </TableCell>
-            <TableCell>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <Ellipsis className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem className="font-semibold text-blue-500 cursor-pointer">
-                    Editar
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="font-semibold text-red-400 cursor-pointer">
-                    Remover
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
-        ))}
+        {data.data?.map((client: Tables<"clients">) => {
+          const formattedDate = new Date(client.created_at!).toLocaleDateString(
+            "pt-BR"
+          );
+
+          return (
+            <TableRow key={client.cpf} className="text-black text-nowrap">
+              <TableCell className="font-medium text-nowrap">
+                {client.first_name} {client.last_name}
+              </TableCell>
+              <TableCell className="text-nowrap">{client.email}</TableCell>
+              <TableCell className="text-nowrap">{client.phone}</TableCell>
+              <TableCell className="text-nowrap">{client.cpf}</TableCell>
+              <TableCell className="text-nowrap">{formattedDate}</TableCell>
+              <TableCell className="text-nowrap">04/04 - 15:00</TableCell>
+              <TableCell className="text-nowrap">
+                <Badge className="bg-green-600 hover:bg-green-500">Ativo</Badge>
+              </TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                      <span className="sr-only">Open menu</span>
+                      <Ellipsis className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem className="font-semibold text-blue-500 cursor-pointer">
+                      Editar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="font-semibold text-red-400 cursor-pointer">
+                      Remover
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );

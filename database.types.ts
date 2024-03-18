@@ -9,31 +9,159 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      appointment_recurrency: {
+        Row: {
+          client_id: number
+          recurrency: Database["public"]["Enums"]["recurrency_type"] | null
+          specialist_id: number
+        }
+        Insert: {
+          client_id: number
+          recurrency?: Database["public"]["Enums"]["recurrency_type"] | null
+          specialist_id: number
+        }
+        Update: {
+          client_id?: number
+          recurrency?: Database["public"]["Enums"]["recurrency_type"] | null
+          specialist_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointment_recurrency_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointment_recurrency_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      appointments: {
+        Row: {
+          appointment_id: number
+          client_id: number | null
+          date: string | null
+          specialist_id: number | null
+          time: string | null
+          value: number | null
+        }
+        Insert: {
+          appointment_id?: number
+          client_id?: number | null
+          date?: string | null
+          specialist_id?: number | null
+          time?: string | null
+          value?: number | null
+        }
+        Update: {
+          appointment_id?: number
+          client_id?: number | null
+          date?: string | null
+          specialist_id?: number | null
+          time?: string | null
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      billing: {
+        Row: {
+          amount: number | null
+          appointment_id: number | null
+          billing_id: number
+          created_at: string | null
+          payment_date: string | null
+          payment_due_date: string | null
+          payment_status:
+            | Database["public"]["Enums"]["payment_status_enum"]
+            | null
+          transaction_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount?: number | null
+          appointment_id?: number | null
+          billing_id?: number
+          created_at?: string | null
+          payment_date?: string | null
+          payment_due_date?: string | null
+          payment_status?:
+            | Database["public"]["Enums"]["payment_status_enum"]
+            | null
+          transaction_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number | null
+          appointment_id?: number | null
+          billing_id?: number
+          created_at?: string | null
+          payment_date?: string | null
+          payment_due_date?: string | null
+          payment_status?:
+            | Database["public"]["Enums"]["payment_status_enum"]
+            | null
+          transaction_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["appointment_id"]
+          }
+        ]
+      }
       clients: {
         Row: {
+          cpf: string | null
           created_at: string | null
           email: string | null
+          first_name: string
           id: number
-          last_name: string | null
-          name: string | null
+          last_name: string
           phone: string | null
           updated_at: string | null
         }
         Insert: {
+          cpf?: string | null
           created_at?: string | null
           email?: string | null
+          first_name: string
           id?: number
-          last_name?: string | null
-          name?: string | null
+          last_name: string
           phone?: string | null
           updated_at?: string | null
         }
         Update: {
+          cpf?: string | null
           created_at?: string | null
           email?: string | null
+          first_name?: string
           id?: number
-          last_name?: string | null
-          name?: string | null
+          last_name?: string
           phone?: string | null
           updated_at?: string | null
         }
@@ -155,7 +283,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      payment_status_enum: "pending" | "paid" | "overdue"
+      recurrency_type: "weekly" | "biweekly" | "one-time"
     }
     CompositeTypes: {
       [_ in never]: never
