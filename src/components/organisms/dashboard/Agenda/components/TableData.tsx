@@ -1,12 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Ellipsis } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -19,6 +17,15 @@ import {
 } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/supabase";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import RescheduleForm from "./RescheduleForm";
 
 const mockSession = {
   id: 1,
@@ -89,12 +96,23 @@ export default function TableData() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem className="font-semibold text-yellow-500 cursor-pointer">
-                      Reagendar
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="font-semibold text-red-500 cursor-pointer">
-                      Cancelar
-                    </DropdownMenuItem>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <span className="font-semibold text-blue-600 text-sm p-1 cursor-pointer">
+                          Reagendar
+                        </span>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-[760px]">
+                        <DialogHeader>
+                          <DialogTitle>Reagendar</DialogTitle>
+                          <DialogDescription>
+                            Preencha o formulário abaixo para reagendar o
+                            agendamento.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <RescheduleForm />
+                      </DialogContent>
+                    </Dialog>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
