@@ -29,6 +29,7 @@ import {
   Command,
 } from "@/components/ui/command";
 import { useToast } from "@/components/ui/use-toast";
+import ReactInputMask from "react-input-mask";
 
 const formSchema = z.object({
   firstName: z.string().min(1),
@@ -167,7 +168,14 @@ export default function AddClientForm({
             <FormItem className="flex items-center gap-3">
               <FormLabel className="text-end">Telefone</FormLabel>
               <FormControl>
-                <Input placeholder="(41) 9 9999-9999" {...field} />
+                <ReactInputMask
+                  mask="(99) 9 9999-9999"
+                  maskChar={null}
+                  {...field}
+                >
+                  {/* @ts-expect-error third-party issue */}
+                  {(inputProps) => <Input {...inputProps} />}
+                </ReactInputMask>
               </FormControl>
             </FormItem>
           )}
@@ -179,7 +187,15 @@ export default function AddClientForm({
             <FormItem className="flex items-center gap-3">
               <FormLabel className="text-end">CPF</FormLabel>
               <FormControl>
-                <Input placeholder="123.456.789-00" {...field} />
+                <ReactInputMask
+                  mask="999.999.999-99"
+                  placeholder="123.456.789-00"
+                  maskChar={null}
+                  {...field}
+                >
+                  {/* @ts-expect-error third-party issue */}
+                  {(inputProps) => <Input {...inputProps} />}
+                </ReactInputMask>
               </FormControl>
             </FormItem>
           )}
@@ -245,7 +261,10 @@ export default function AddClientForm({
             <FormItem className="flex items-center gap-3">
               <FormLabel className="text-end">Horário</FormLabel>
               <FormControl>
-                <Input placeholder="15:00" {...field} />
+                <ReactInputMask mask="99:99" maskChar={null} {...field}>
+                  {/* @ts-expect-error third-party issue */}
+                  {(inputProps) => <Input {...inputProps} />}
+                </ReactInputMask>
               </FormControl>
             </FormItem>
           )}
