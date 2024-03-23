@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Ellipsis } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -27,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import RescheduleForm from "./RescheduleForm";
 import { useState } from "react";
+import AppointmentStatusBadge from "@/components/atoms/AppointmentStatusBadge";
 
 const mockSession = {
   id: 1,
@@ -87,9 +87,7 @@ export default function TableData() {
                 </span>
               </TableCell>
               <TableCell>
-                <Badge className="bg-blue-600 hover:bg-blue-600">
-                  Confirmado
-                </Badge>
+                <AppointmentStatusBadge variant={item.status} />
               </TableCell>
               <TableCell>
                 <DropdownMenu>
@@ -108,9 +106,9 @@ export default function TableData() {
                     >
                       <DialogTrigger
                         onClick={() => setIsRescheduleFormDialogOpen(true)}
-                        asChild
+                        className="min-w-0 px-2 py-1"
                       >
-                        <span className="font-semibold text-blue-600 text-sm p-1 cursor-pointer">
+                        <span className="font-semibold text-blue-600 text-sm cursor-pointer">
                           Reagendar
                         </span>
                       </DialogTrigger>
