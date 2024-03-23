@@ -26,12 +26,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import RescheduleForm from "./RescheduleForm";
+import { useState } from "react";
 
 const mockSession = {
   id: 1,
 };
 
 export default function TableData() {
+  const [isRescheduleFormDialogOpen, setIsRescheduleFormDialogOpen] =
+    useState(false);
+
   const appointments = useQuery({
     queryKey: ["appointments"],
     queryFn: async () =>
@@ -96,8 +100,16 @@ export default function TableData() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <Dialog>
-                      <DialogTrigger asChild>
+                    <Dialog
+                      onOpenChange={(state) =>
+                        setIsRescheduleFormDialogOpen(state)
+                      }
+                      open={isRescheduleFormDialogOpen}
+                    >
+                      <DialogTrigger
+                        onClick={() => setIsRescheduleFormDialogOpen(true)}
+                        asChild
+                      >
                         <span className="font-semibold text-blue-600 text-sm p-1 cursor-pointer">
                           Reagendar
                         </span>
@@ -110,7 +122,14 @@ export default function TableData() {
                             agendamento.
                           </DialogDescription>
                         </DialogHeader>
-                        <RescheduleForm />
+                        <RescheduleForm
+                          clientCpf={item.clients.cpf}
+                          date={item.date}
+                          time={item.time}
+                          value={item.value}
+                          appointmentId={item.appointment_id}
+                          setIsFormOpen={setIsRescheduleFormDialogOpen}
+                        />
                       </DialogContent>
                     </Dialog>
                   </DropdownMenuContent>

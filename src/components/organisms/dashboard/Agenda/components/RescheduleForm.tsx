@@ -19,8 +19,9 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/supabase";
+import ReactInputMask from "react-input-mask";
 
 const formSchema = z.object({
   cpf: z.string().min(1),
@@ -29,14 +30,40 @@ const formSchema = z.object({
   value: z.string().min(1),
 });
 
-export default function RescheduleForm() {
+interface RescheduleFormProps {
+  clientCpf: string;
+  date: string;
+  time: string;
+  value: number;
+  appointmentId: number;
+  setIsFormOpen: (state: boolean) => void;
+}
+
+const parseCurrency = (value: string) => {
+  const rawValue = value.split("R$")[1];
+  const trimmedRawValue = rawValue.trim();
+
+  return Number.parseFloat(trimmedRawValue.replace(",", "."));
+};
+
+export default function RescheduleForm({
+  clientCpf,
+  date,
+  time,
+  value,
+  appointmentId,
+  setIsFormOpen,
+}: RescheduleFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      cpf: "123.456.789-00",
-      date: "",
-      time: "",
-      value: "",
+      cpf: clientCpf,
+      date,
+      time: time,
+      value: new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(value),
     },
   });
 
@@ -47,17 +74,33 @@ export default function RescheduleForm() {
         .update({
           date: values.date,
           time: values.time,
-          value: values.value,
+          value: parseCurrency(values.value),
         })
-        .eq("cpf", values.cpf),
+        .eq("appointment_id", appointmentId),
   });
+
+  const queryClient = useQueryClient();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     rescheduleMutation.mutate(values, {
-      onSuccess: () => alert("Rescheduled"),
+      onSuccess: () => {
+        alert("Agendamento reagendado com sucesso!");
+        queryClient.invalidateQueries({ queryKey: ["appointments"] });
+        setIsFormOpen(false);
+      },
       onError: (error) => alert(error.message),
     });
   }
+
+  const anyValueHasChanged = () => {
+    const values = form.getValues();
+
+    return (
+      values.date !== date ||
+      values.time !== time ||
+      parseCurrency(values.value) !== value
+    );
+  };
 
   return (
     <Form {...form}>
@@ -68,7 +111,18 @@ export default function RescheduleForm() {
             <FormField
               control={form.control}
               name="cpf"
-              render={({ field }) => <Input {...field} />}
+              shouldUnregister
+              render={({ field }) => (
+                <ReactInputMask
+                  {...field}
+                  mask="999.999.999-99"
+                  disabled
+                  maskChar={null}
+                >
+                  {/* @ts-expect-error third-party issue */}
+                  {(props) => <Input {...props} disabled />}
+                </ReactInputMask>
+              )}
             />
           </FormControl>
         </FormItem>
@@ -146,11 +200,15 @@ export default function RescheduleForm() {
             <FormField
               control={form.control}
               name="value"
-              render={({ field }) => <Input {...field} type="number" />}
+              render={({ field }) => <Input {...field} />}
             />
           </FormControl>
         </FormItem>
-        <Button type="submit" className="bg-blue-700 hover:bg-blue-800">
+        <Button
+          type="submit"
+          className="bg-blue-700 hover:bg-blue-800"
+          disabled={!anyValueHasChanged()}
+        >
           Reagendar
         </Button>
       </form>
