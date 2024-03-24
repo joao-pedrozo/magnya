@@ -73,10 +73,17 @@ export default function TableData() {
                 </span>
               </TableCell>
               <TableCell>
-                <span>{item.date}</span>
+                <span>
+                  {new Intl.DateTimeFormat("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                  }).format(new Date(item.scheduled_date))}
+                </span>
               </TableCell>
               <TableCell>
-                <span>{item.time}</span>
+                <span>{`${new Date(item.scheduled_date).getHours()}:${new Date(
+                  item.scheduled_date
+                ).getMinutes()}`}</span>
               </TableCell>
               <TableCell>
                 <span>

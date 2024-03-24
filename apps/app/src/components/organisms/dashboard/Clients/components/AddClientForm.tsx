@@ -83,11 +83,16 @@ export default function AddClientForm({
         recurrency: data.recurrency,
       });
 
+      const year = new Date(data.date).getFullYear();
+      const month = new Date(data.date).getMonth();
+      const day = new Date(data.date).getDate();
+      const hours = Number(data.time.split(":")[0]);
+      const minutes = Number(data.time.split(":")[1]);
+
       await supabase.from("appointments").insert({
         client_id: results[0].id,
         specialist_id: mockSession.id,
-        date: data.date,
-        time: data.time,
+        scheduled_date: new Date(year, month, day, hours, minutes),
         value: 100,
       });
     },
