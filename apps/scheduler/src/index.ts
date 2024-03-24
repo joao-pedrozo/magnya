@@ -5,7 +5,6 @@ require("dotenv").config({ path: `../../.env.local` });
 
 console.log(process.env.SUPABASE_PROJECT_URL);
 
-// Run every 5 seconds
 cron.schedule("*/5 * * * * *", async () => {
   console.log("running a task every 5 seconds");
 
@@ -19,7 +18,18 @@ cron.schedule("*/5 * * * * *", async () => {
       .lte("scheduled_date", new Date().toISOString())
       .select();
 
-  const { count } = await updateStatus();
+  const { data } = await updateStatus();
 
-  console.log(`${count} updated`);
+  if (!data?.length) return;
+
+  const billings = data.map((completedAppointment) => ({
+    appointment_id: completedAppointment.appointment_id,
+    amount: completedAppointment.value,
+    payment_status: "pending",
+  }));
+
+  const createBillings = async () =>
+    await supabase.from("billings").insert(billings);
+
+  createBillings();
 });
