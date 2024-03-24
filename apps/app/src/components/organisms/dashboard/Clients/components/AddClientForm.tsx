@@ -101,14 +101,13 @@ export default function AddClientForm({
         title: "Cliente adicionado com sucesso!",
         description: "O cliente foi adicionado com sucesso.",
       });
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
       setIsFormDialogOpen(false);
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    clientMutation.mutate(values, {
-      onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients"] }),
-    });
+    clientMutation.mutate(values);
   }
 
   const form = useForm<z.infer<typeof formSchema>>({
