@@ -68,15 +68,21 @@ export default function RescheduleForm({
   });
 
   const rescheduleMutation = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) =>
-      supabase
+    mutationFn: async (values: z.infer<typeof formSchema>) => {
+      const day = new Date(values.date).getDate();
+      const month = new Date(values.date).getMonth();
+      const year = new Date(values.date).getFullYear();
+      const hours = Number.parseInt(values.time.split(":")[0]);
+      const minutes = Number.parseInt(values.time.split(":")[1]);
+
+      return supabase
         .from("appointments")
         .update({
-          date: values.date,
-          time: values.time,
+          scheduled_date: new Date(year, month, day, hours, minutes),
           value: parseCurrency(values.value),
         })
-        .eq("appointment_id", appointmentId),
+        .eq("appointment_id", appointmentId);
+    },
   });
 
   const queryClient = useQueryClient();
