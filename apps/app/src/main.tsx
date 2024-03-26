@@ -16,6 +16,8 @@ import Page404 from "@/pages/404.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import Signup from "@/pages/SignUp.tsx";
+import ProtectedRoute from "@/components/atoms/ProtectedRoute.tsx";
+import Login from "@/pages/Login.tsx";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +32,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <Dashboard />,
+    element: <ProtectedRoute component={Dashboard} />,
   },
   {
     path: "/",
@@ -47,6 +49,10 @@ const router = createBrowserRouter([
   {
     path: "/sign-up",
     element: <Signup />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
   {
     path: "*",
