@@ -1,42 +1,69 @@
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/supabase";
-import { useNavigate } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
 
 export default function Login() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const { email, password } = data;
 
-    const { _, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
-      toast({
-        title: "Erro ao fazer login",
+      return toast({
+        title: "Erro",
         description: error.message,
       });
-    } else {
-      toast({
-        title: "Login realizado com sucesso!",
-      });
-
-      navigate("/dashboard");
     }
+
+    navigate("/dashboard");
+    toast({
+      title: "Sucesso",
+      description: "Login realizado com sucesso!",
+    });
   };
 
   return (
     <div>
-      <h1 className="text-3xl text-center my-4">Login</h1>
+      <h1 className="text-3xl text-center my-4 font-semibold">
+        Bem-vindo(a) de volta!
+      </h1>
 
-      <form onSubmit={handleLogin} className="flex flex-col items-center">
+      {/* <form onSubmit={handleLogin} className="flex flex-col items-center">
         <label>
           Email:
           <input type="email" name="email" className="border ml-2" />
@@ -46,7 +73,52 @@ export default function Login() {
           <input type="password" name="password" className="border ml-2" />
         </label>
         <button type="submit">Login</button>
-      </form>
+      </form> */}
+
+      <div className="flex justify-center">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              name="email"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="email">Email</FormLabel>
+                  <Input
+                    id="email"
+                    type="email"
+                    {...field}
+                    placeholder="Seu email"
+                  />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name="password"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="password">Senha</FormLabel>
+                  <Input
+                    id="password"
+                    type="password"
+                    {...field}
+                    placeholder="Sua senha"
+                  />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type="submit"
+              className="w-full bg-blue-700 hover:bg-blue-600"
+            >
+              Login
+            </Button>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 }
