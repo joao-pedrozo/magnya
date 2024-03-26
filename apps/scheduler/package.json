@@ -13,7 +13,6 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.11.30",
-    "@types/twilio": "^3.19.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.3"
   },
@@ -21,6 +20,7 @@
     "@supabase/supabase-js": "^2.39.8",
     "@types/node-cron": "^3.0.11",
     "dotenv": "^16.4.5",
+    "mercadopago": "^2.0.8",
     "node-cron": "^3.0.3",
     "twilio": "^5.0.1"
   }

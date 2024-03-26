@@ -1,5 +1,6 @@
 import * as cron from "node-cron";
 import { supabase } from "./supabase";
+import generatePix from "./pix";
 const twilio = require("twilio");
 
 require("dotenv").config({ path: `../../.env.local` });
@@ -42,8 +43,6 @@ cron.schedule("*/5 * * * * *", async () => {
 cron.schedule("*/5 * * * * *", async () => {
   console.log("Running charging message task");
 
-  // Find billings that have charge_message_status as pending and are older than 24 hours
-
   const twentyFourHoursAgo = new Date(
     new Date().getTime() - 24 * 60 * 60 * 1000
   ).toISOString();
@@ -75,9 +74,9 @@ cron.schedule("*/5 * * * * *", async () => {
   const messages = await Promise.allSettled(
     billingsToBeCharged.map(async (billingToBeCharged) => {
       try {
-        await sendTwilioMessage({
-          to: billingToBeCharged.appointments.clients.phone_number,
-          scheduledDate: billingToBeCharged.appointments.scheduled_date,
+        await sendCharingMessageWithPixLink({
+          amount: billingToBeCharged.amount,
+          customerEmail: billingToBeCharged.appointments.clients.email,
         });
 
         sucessfulChargedAppointmentsIds.push(
@@ -105,15 +104,18 @@ cron.schedule("*/5 * * * * *", async () => {
     .select();
 });
 
-const sendTwilioMessage = async ({
-  to,
-  scheduledDate,
+const sendCharingMessageWithPixLink = async ({
+  amount,
+  customerEmail,
 }: {
-  to: string;
-  scheduledDate: Date;
-}) =>
+  customerEmail: string;
+  amount: number;
+}) => {
+  const pix = await generatePix({ amount, customerEmail });
+
   await twilioClient.messages.create({
-    body: `Olá! Espero que esteja tudo bem contigo! 😊 Estou aqui para lembrá-lo carinhosamente de que temos nossa consulta marcada para o dia X, às Y. Por favor, confirme sua presença quando puder. Estou ansiosa para vê-lo em breve!`,
+    body: `Olá! Segue o link para pagamento do seu boleto PIX: ${pix.qrCode} 🚀`,
     from: `whatsapp:${process.env.TWILIO_PHONE_NUMBER}`,
     to: `whatsapp:+554198880694`,
   });
+};
