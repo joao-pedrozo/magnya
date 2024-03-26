@@ -15,6 +15,7 @@ import Schedule from "@/pages/Schedule.tsx";
 import Page404 from "@/pages/404.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import Signup from "@/pages/SignUp.tsx";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: "/404",
     element: <Page404 />,
+  },
+  {
+    path: "/sign-up",
+    element: <Signup />,
   },
   {
     path: "*",
