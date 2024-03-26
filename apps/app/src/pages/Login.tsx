@@ -59,7 +59,7 @@ export default function Login() {
 
   return (
     <div>
-      <h1 className="text-3xl text-center my-4 font-semibold">
+      <h1 className="text-3xl text-center mt-12 mb-4 font-semibold">
         Bem-vindo(a) de volta!
       </h1>
 
@@ -112,7 +112,7 @@ export default function Login() {
 
             <Button
               type="submit"
-              className="w-full bg-blue-700 hover:bg-blue-600"
+              className="w-full bg-blue-700 hover:bg-blue-600 font-semibold text-md"
             >
               Login
             </Button>
