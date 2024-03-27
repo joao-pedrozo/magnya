@@ -39,32 +39,32 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "specialists"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       appointments: {
         Row: {
           appointment_id: number
           client_id: number | null
-          date: string | null
+          scheduled_date: string | null
           specialist_id: number | null
-          time: string | null
+          status: Database["public"]["Enums"]["appointment_status"]
           value: number | null
         }
         Insert: {
           appointment_id?: number
           client_id?: number | null
-          date?: string | null
+          scheduled_date?: string | null
           specialist_id?: number | null
-          time?: string | null
+          status?: Database["public"]["Enums"]["appointment_status"]
           value?: number | null
         }
         Update: {
           appointment_id?: number
           client_id?: number | null
-          date?: string | null
+          scheduled_date?: string | null
           specialist_id?: number | null
-          time?: string | null
+          status?: Database["public"]["Enums"]["appointment_status"]
           value?: number | null
         }
         Relationships: [
@@ -81,14 +81,15 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "specialists"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
-      billing: {
+      billings: {
         Row: {
           amount: number | null
           appointment_id: number | null
           billing_id: number
+          charge_message_status: Database["public"]["Enums"]["billing_charge_message_status"]
           created_at: string | null
           payment_date: string | null
           payment_due_date: string | null
@@ -102,6 +103,7 @@ export type Database = {
           amount?: number | null
           appointment_id?: number | null
           billing_id?: number
+          charge_message_status?: Database["public"]["Enums"]["billing_charge_message_status"]
           created_at?: string | null
           payment_date?: string | null
           payment_due_date?: string | null
@@ -115,6 +117,7 @@ export type Database = {
           amount?: number | null
           appointment_id?: number | null
           billing_id?: number
+          charge_message_status?: Database["public"]["Enums"]["billing_charge_message_status"]
           created_at?: string | null
           payment_date?: string | null
           payment_due_date?: string | null
@@ -131,7 +134,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "appointments"
             referencedColumns: ["appointment_id"]
-          }
+          },
         ]
       }
       clients: {
@@ -143,6 +146,7 @@ export type Database = {
           id: number
           last_name: string
           phone: string | null
+          specialist_id: number | null
           updated_at: string | null
         }
         Insert: {
@@ -153,6 +157,7 @@ export type Database = {
           id?: number
           last_name: string
           phone?: string | null
+          specialist_id?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -163,38 +168,17 @@ export type Database = {
           id?: number
           last_name?: string
           phone?: string | null
+          specialist_id?: number | null
           updated_at?: string | null
-        }
-        Relationships: []
-      }
-      specialist_client: {
-        Row: {
-          client_id: number
-          specialist_id: number
-        }
-        Insert: {
-          client_id: number
-          specialist_id: number
-        }
-        Update: {
-          client_id?: number
-          specialist_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "specialist_client_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "specialist_client_specialist_id_fkey"
+            foreignKeyName: "fk_specialist_id"
             columns: ["specialist_id"]
             isOneToOne: false
             referencedRelation: "specialists"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       specialist_working_hours: {
@@ -230,11 +214,12 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "weekdays"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       specialists: {
         Row: {
+          auth_id: string | null
           created_at: string | null
           id: number
           updated_at: string | null
@@ -243,6 +228,7 @@ export type Database = {
           working_hours_id: number[] | null
         }
         Insert: {
+          auth_id?: string | null
           created_at?: string | null
           id?: number
           updated_at?: string | null
@@ -251,6 +237,7 @@ export type Database = {
           working_hours_id?: number[] | null
         }
         Update: {
+          auth_id?: string | null
           created_at?: string | null
           id?: number
           updated_at?: string | null
@@ -283,6 +270,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      appointment_status: "pending" | "cancelled" | "confirmed" | "completed"
+      billing_charge_message_status: "sent" | "pending"
       payment_status_enum: "pending" | "paid" | "overdue"
       recurrency_type: "weekly" | "biweekly" | "one-time"
     }
@@ -292,14 +281,16 @@ export type Database = {
   }
 }
 
+type PublicSchema = Database[Extract<keyof Database, "public">]
+
 export type Tables<
   PublicTableNameOrOptions extends
-    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
@@ -307,67 +298,67 @@ export type Tables<
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
-      Database["public"]["Views"])
-  ? (Database["public"]["Tables"] &
-      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
-      Row: infer R
-    }
-    ? R
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
     : never
-  : never
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
-      Insert: infer I
-    }
-    ? I
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
     : never
-  : never
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
-      Update: infer U
-    }
-    ? U
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
     : never
-  : never
 
 export type Enums<
   PublicEnumNameOrOptions extends
-    | keyof Database["public"]["Enums"]
+    | keyof PublicSchema["Enums"]
     | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
-    : never = never
+    : never = never,
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
-  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
-  : never
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
