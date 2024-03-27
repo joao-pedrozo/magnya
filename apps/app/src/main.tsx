@@ -18,6 +18,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Signup from "@/pages/SignUp.tsx";
 import ProtectedRoute from "@/components/atoms/ProtectedRoute.tsx";
 import Login from "@/pages/Login.tsx";
+import { AuthProvider } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
 
@@ -64,7 +65,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <RegisterSpecialistProvider>
-        <RouterProvider router={router} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
         <Toaster />
       </RegisterSpecialistProvider>
     </QueryClientProvider>

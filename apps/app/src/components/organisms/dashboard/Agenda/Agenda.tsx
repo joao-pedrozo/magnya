@@ -1,6 +1,5 @@
 import SectionTitle from "@/components/atoms/SectionTitle";
 import TableData from "./components/TableData";
-import NewAppointmentForm from "./components/NewAppointmentForm";
 
 export default function Agenda() {
   return (

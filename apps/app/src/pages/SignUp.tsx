@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
 });
 
 export default function SignUp() {
@@ -24,13 +26,15 @@ export default function SignUp() {
     defaultValues: {
       email: "",
       password: "",
+      firstName: "",
+      lastName: "",
     },
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     const { email, password } = data;
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data: auth, error } = await supabase.auth.signUp({
       email,
       password,
     });
@@ -42,10 +46,15 @@ export default function SignUp() {
       });
     }
 
+    await supabase.from("specialists").insert({
+      username: `${data.firstName} ${data.lastName}`,
+      auth_id: auth?.session?.user.id,
+    });
+
     navigate("/dashboard");
     toast({
       title: "Sucesso",
-      description: "Login realizado com sucesso!",
+      description: "Cadastro realizado com sucesso! Bem-vindo(a) ao sistema!",
     });
   };
 
@@ -64,7 +73,41 @@ export default function SignUp() {
 
       <div className="flex justify-center">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid grid-cols-2 gap-4"
+          >
+            <FormField
+              name="firstName"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="firstName">Nome</FormLabel>
+                  <Input
+                    id="firstName"
+                    type="text"
+                    {...field}
+                    placeholder="Seu nome"
+                  />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name="lastName"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="lastName">Sobrenome</FormLabel>
+                  <Input
+                    id="lastName"
+                    type="text"
+                    {...field}
+                    placeholder="Seu sobrenome"
+                  />
+                </FormItem>
+              )}
+            />
             <FormField
               name="email"
               control={form.control}

@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/command";
 import { useToast } from "@/components/ui/use-toast";
 import ReactInputMask from "react-input-mask";
+import { useAuth } from "@/hooks/useAuth";
 
 const formSchema = z.object({
   firstName: z.string().min(1),
@@ -41,10 +42,6 @@ const formSchema = z.object({
   time: z.string().min(1),
   recurrency: z.string().min(1),
 });
-
-const mockSession = {
-  id: 1,
-};
 
 const languages = [
   { label: "Semanal", value: "weekly" },
@@ -61,6 +58,7 @@ export default function AddClientForm({
 }: AddClientFormProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { specialist } = useAuth();
 
   const clientMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
@@ -72,6 +70,7 @@ export default function AddClientForm({
           email: data.email,
           phone: data.phone,
           cpf: data.CPF,
+          specialist_id: specialist?.id,
         })
         .select();
 
@@ -79,7 +78,7 @@ export default function AddClientForm({
 
       await supabase.from("appointment_recurrency").insert({
         client_id: results[0].id,
-        specialist_id: mockSession.id,
+        specialist_id: specialist?.id,
         recurrency: data.recurrency,
       });
 
@@ -91,7 +90,7 @@ export default function AddClientForm({
 
       await supabase.from("appointments").insert({
         client_id: results[0].id,
-        specialist_id: mockSession.id,
+        specialist_id: specialist?.id,
         scheduled_date: new Date(year, month, day, hours, minutes),
         value: 100,
       });

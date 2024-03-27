@@ -27,14 +27,13 @@ import {
 import RescheduleForm from "./RescheduleForm";
 import { useState } from "react";
 import AppointmentStatusBadge from "@/components/atoms/AppointmentStatusBadge";
-
-const mockSession = {
-  id: 1,
-};
+import { useAuth } from "@/hooks/useAuth";
 
 export default function TableData() {
   const [isRescheduleFormDialogOpen, setIsRescheduleFormDialogOpen] =
     useState(false);
+
+  const { specialist } = useAuth();
 
   const appointments = useQuery({
     queryKey: ["appointments"],
@@ -46,7 +45,7 @@ export default function TableData() {
             *, clients(*) 
           `
         )
-        .eq("specialist_id", mockSession.id),
+        .eq("specialist_id", specialist?.id),
   });
 
   return (

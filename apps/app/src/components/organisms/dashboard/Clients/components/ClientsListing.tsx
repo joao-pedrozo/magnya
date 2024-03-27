@@ -31,13 +31,19 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ClientsListing() {
   const { toast } = useToast();
+  const { specialist } = useAuth();
 
   const { data, isLoading } = useQuery({
     queryKey: ["clients"],
-    queryFn: async () => await supabase.from("clients").select("*"),
+    queryFn: async () =>
+      await supabase
+        .from("clients")
+        .select("*")
+        .eq("specialist_id", specialist?.id),
   });
 
   const queryClient = useQueryClient();
