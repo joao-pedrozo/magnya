@@ -1,12 +1,22 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/supabase";
 import { useAuth } from "@/hooks/useAuth";
-import { Client } from "@/types/supabase";
 import { parseISO, format } from "date-fns";
-import { QueryData } from "@supabase/supabase-js";
 import ptBR from "date-fns/locale/pt-BR";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 const formatDate = (date: string, time: string) => {
   const dataString = time;
@@ -26,8 +36,9 @@ const formatDate = (date: string, time: string) => {
 };
 
 export default function ClientsListing() {
-  // const { toast } = useToast();
+  const { toast } = useToast();
   const { specialist } = useAuth();
+  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryKey: ["clients"],
@@ -38,19 +49,18 @@ export default function ClientsListing() {
         .eq("specialist_id", specialist?.id),
   });
 
-  // const queryClient = useQueryClient();
+  const deleteClientMutation = useMutation({
+    mutationFn: async (cpf: string) =>
+      await supabase.from("clients").delete().match({ cpf }),
+    onSuccess: () => {
+      toast({
+        title: "Cliente removido com sucesso.",
+        variant: "destructive",
+      });
 
-  // const deleteClientMutation = useMutation({
-  //   mutationFn: async (cpf: string) =>
-  //     await supabase.from("clients").delete().match({ cpf }),
-  //   onSuccess: () => {
-  //     toast({
-  //       title: "Cliente removido com sucesso.",
-  //     });
-
-  //     queryClient.invalidateQueries({ queryKey: ["clients"] });
-  //   },
-  // });
+      queryClient.invalidateQueries({ queryKey: ["clients"] });
+    },
+  });
 
   if (isLoading || !data?.data) {
     return <p>Loading...</p>;
@@ -86,9 +96,40 @@ export default function ClientsListing() {
             <Button className="w-full bg-blue-600 hover:bg-blue-700" size="sm">
               Editar
             </Button>
-            <Button className="w-full bg-red-700 hover:bg-red-800" size="sm">
-              Excluir
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  className="w-full bg-red-700 hover:bg-red-800"
+                  size="sm"
+                >
+                  Excluir
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Tem certeza que deseja excluir?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Esta ação não pode ser desfeita.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel disabled={deleteClientMutation.isPending}>
+                    Cancelar
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-red-700 hover:bg-red-800"
+                    disabled={deleteClientMutation.isPending}
+                    onClick={() => {
+                      deleteClientMutation.mutate(client.cpf!);
+                    }}
+                  >
+                    Continuar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       ))}
