@@ -47,7 +47,7 @@ const router = createBrowserRouter([
     element: <Page404 />,
   },
   {
-    path: "/sign-up",
+    path: "/signup",
     element: <Signup />,
   },
   {

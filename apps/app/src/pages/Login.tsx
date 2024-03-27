@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -51,21 +51,16 @@ export default function Login() {
 
   return (
     <div>
-      <h1 className="text-3xl text-center mt-12 mb-4 font-semibold">
+      <h1 className="text-3xl text-center mt-12 mb-2 font-semibold">
         Bem-vindo(a) de volta!
       </h1>
 
-      {/* <form onSubmit={handleLogin} className="flex flex-col items-center">
-        <label>
-          Email:
-          <input type="email" name="email" className="border ml-2" />
-        </label>
-        <label>
-          Password:
-          <input type="password" name="password" className="border ml-2" />
-        </label>
-        <button type="submit">Login</button>
-      </form> */}
+      <span className="text-center block mb-4">
+        ou{" "}
+        <Link to="/signup" className="font-semibold text-blue-600">
+          crie uma conta
+        </Link>
+      </span>
 
       <div className="flex justify-center">
         <Form {...form}>

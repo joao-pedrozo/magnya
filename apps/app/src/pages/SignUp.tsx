@@ -1,50 +1,111 @@
+import { Link, useNavigate } from "react-router-dom";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/supabase";
-import { useNavigate } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
+import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
 
 export default function SignUp() {
-  const navigate = useNavigate();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const { data, error } = await supabase.auth.signUp({
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const { email, password } = data;
+
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
-      options: {
-        emailRedirectTo: "https://example.com/welcome",
-      },
     });
+
     if (error) {
-      console.error("Error signing up:", error.message);
-    } else {
-      console.log("Sign up successful:", data);
-      toast({
-        title: "Cadastro realizado com sucesso!",
-        description: "Acesse o dashboard para configurar seu perfil.",
+      return toast({
+        title: "Erro",
+        description: error.message,
       });
-      navigate("/dashboard");
     }
+
+    navigate("/dashboard");
+    toast({
+      title: "Sucesso",
+      description: "Login realizado com sucesso!",
+    });
   };
 
   return (
     <div>
-      <h1 className="text-3xl text-center my-4">SignUp</h1>
+      <h1 className="text-3xl text-center mt-12 mb-2 font-semibold">
+        Crie uma conta
+      </h1>
 
-      <form onSubmit={handleSignUp} className="flex flex-col items-center">
-        <label>
-          Email:
-          <input type="email" name="email" className="border ml-2" />
-        </label>
-        <label>
-          Password:
-          <input type="password" name="password" className="border ml-2" />
-        </label>
-        <button type="submit">Sign Up</button>
-      </form>
+      <span className="text-center block mb-4">
+        ou{" "}
+        <Link to="/login" className="font-semibold text-blue-600">
+          faça login
+        </Link>
+      </span>
+
+      <div className="flex justify-center">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              name="email"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="email">Email</FormLabel>
+                  <Input
+                    id="email"
+                    type="email"
+                    {...field}
+                    placeholder="Seu email"
+                  />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              name="password"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="password">Senha</FormLabel>
+                  <Input
+                    id="password"
+                    type="password"
+                    {...field}
+                    placeholder="Sua senha"
+                  />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type="submit"
+              className="w-full bg-blue-700 hover:bg-blue-600 font-semibold text-md"
+            >
+              Criar conta
+            </Button>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 }
