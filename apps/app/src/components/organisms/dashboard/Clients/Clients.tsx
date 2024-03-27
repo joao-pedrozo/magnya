@@ -36,7 +36,7 @@ export default function Clients() {
             <Input
               placeholder="Procure por nome"
               type="text"
-              className="w-fit mb-4 pl-10"
+              className="w-fit pl-10"
             />
           </div>
           <Dialog

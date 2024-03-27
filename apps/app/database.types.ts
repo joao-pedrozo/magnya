@@ -137,6 +137,35 @@ export type Database = {
           },
         ]
       }
+      client_schedulingtime: {
+        Row: {
+          client_id: number | null
+          id: number
+          scheduled_date: string | null
+          scheduled_time: string | null
+        }
+        Insert: {
+          client_id?: number | null
+          id?: number
+          scheduled_date?: string | null
+          scheduled_time?: string | null
+        }
+        Update: {
+          client_id?: number | null
+          id?: number
+          scheduled_date?: string | null
+          scheduled_time?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_schedulingtime_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           cpf: string | null
