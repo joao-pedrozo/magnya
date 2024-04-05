@@ -21,7 +21,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/supabase";
-import ReactInputMask from "react-input-mask";
+import ReactInput from "react-input-mask";
 
 const formSchema = z.object({
   cpf: z.string().min(1),
