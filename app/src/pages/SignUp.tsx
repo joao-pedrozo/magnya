@@ -10,12 +10,14 @@ import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Specialist } from "@/types/supabase";
+import ReactInputMask from "react-input-mask";
 
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   firstName: z.string().min(1),
   lastName: z.string().min(1),
+  cpfCnpj: z.string().min(1),
 });
 
 export default function SignUp() {
@@ -29,16 +31,36 @@ export default function SignUp() {
       password: "",
       firstName: "",
       lastName: "",
+      cpfCnpj: "",
     },
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const { email, password } = data;
+    const { email, password, firstName, lastName, cpfCnpj } = data;
 
     const { data: auth, error } = await supabase.auth.signUp({
       email,
       password,
     });
+
+    const cpfCnpjFormatted = cpfCnpj.replace(/\D/g, "");
+
+    const createSubscription = await fetch(
+      "http://localhost:3000/subscription",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cpfCnpj: cpfCnpjFormatted,
+          name: `${firstName} ${lastName}`,
+        }),
+      }
+    );
+
+    const subscription = await createSubscription.json();
+    const customerId = await subscription.customer;
 
     if (error) {
       return toast({
@@ -52,6 +74,7 @@ export default function SignUp() {
       .insert({
         username: `${data.firstName} ${data.lastName}`,
         auth_id: auth?.session?.user.id,
+        payment_provider_customer_id: customerId,
       })
       .select()
       .returns<Specialist[]>();
@@ -69,11 +92,7 @@ export default function SignUp() {
       status: "success",
     });
 
-    // Wait database trigger
-
-    setInterval(() => {
-      navigate("/login");
-    }, 4000);
+    navigate("/dashboard");
   };
 
   return (
@@ -125,6 +144,24 @@ export default function SignUp() {
                 )}
               />
               <FormField
+                name="cpfCnpj"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="cpfCnpj">CPF</FormLabel>
+                    <ReactInputMask
+                      mask="999.999.999-99"
+                      maskChar={null}
+                      placeholder="Seu CPF"
+                      {...field}
+                    >
+                      {/* @ts-expect-error third-party issue */}
+                      {(inputProps) => <Input {...inputProps} />}
+                    </ReactInputMask>
+                  </FormItem>
+                )}
+              />
+              <FormField
                 name="email"
                 control={form.control}
                 render={({ field }) => (
@@ -139,7 +176,6 @@ export default function SignUp() {
                   </FormItem>
                 )}
               />
-
               <FormField
                 name="password"
                 control={form.control}

@@ -19,6 +19,7 @@ import Signup from "@/pages/SignUp.tsx";
 import ProtectedRoute from "@/components/atoms/ProtectedRoute.tsx";
 import Login from "@/pages/Login.tsx";
 import { AuthProvider } from "@/hooks/useAuth";
+import { SubscriptionProvider } from "@/hooks/useSubscription.tsx";
 
 const queryClient = new QueryClient();
 
@@ -66,7 +67,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <RegisterSpecialistProvider>
         <AuthProvider>
-          <RouterProvider router={router} />
+          <SubscriptionProvider>
+            <RouterProvider router={router} />
+          </SubscriptionProvider>
         </AuthProvider>
         <Toaster />
       </RegisterSpecialistProvider>
