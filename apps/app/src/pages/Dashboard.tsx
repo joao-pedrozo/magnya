@@ -8,18 +8,12 @@ import Template from "@/components/templates/Dashboard";
 import Agenda from "@/components/organisms/dashboard/Agenda";
 import Configuration from "@/components/organisms/dashboard/Configuration";
 import { supabase } from "@/supabase";
+import SubscriptionChargeDialog from "@/components/organisms/dashboard/Default/SubscriptionChargeDialog";
+import { useSubscription } from "@/hooks/useSubscription";
 
 function Dashboard() {
   const [selectedMenuItem, setSelectedMenuItem] = useState("default");
-
-  useEffect(() => {
-    async function test() {
-      const { data, error } = await supabase.auth.getSession();
-
-      console.log(data.session);
-    }
-    test();
-  }, []);
+  const { status } = useSubscription();
 
   return (
     <Template
@@ -32,6 +26,7 @@ function Dashboard() {
       {selectedMenuItem === "billings" && <Billings />}
       {selectedMenuItem === "agenda" && <Agenda />}
       {selectedMenuItem === "configuration" && <Configuration />}
+      {status && status !== "paid" && <SubscriptionChargeDialog />}
     </Template>
   );
 }

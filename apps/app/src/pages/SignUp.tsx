@@ -9,12 +9,15 @@ import { supabase } from "@/supabase";
 import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Specialist } from "@/types/supabase";
+import ReactInputMask from "react-input-mask";
 
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   firstName: z.string().min(1),
   lastName: z.string().min(1),
+  cpfCnpj: z.string().min(1),
 });
 
 export default function SignUp() {
@@ -28,16 +31,36 @@ export default function SignUp() {
       password: "",
       firstName: "",
       lastName: "",
+      cpfCnpj: "",
     },
   });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    const { email, password } = data;
+    const { email, password, firstName, lastName, cpfCnpj } = data;
 
     const { data: auth, error } = await supabase.auth.signUp({
       email,
       password,
     });
+
+    const cpfCnpjFormatted = cpfCnpj.replace(/\D/g, "");
+
+    const createSubscription = await fetch(
+      "http://localhost:3000/subscription",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cpfCnpj: cpfCnpjFormatted,
+          name: `${firstName} ${lastName}`,
+        }),
+      }
+    );
+
+    const subscription = await createSubscription.json();
+    const customerId = await subscription.customer;
 
     if (error) {
       return toast({
@@ -46,16 +69,30 @@ export default function SignUp() {
       });
     }
 
-    await supabase.from("specialists").insert({
-      username: `${data.firstName} ${data.lastName}`,
-      auth_id: auth?.session?.user.id,
+    const supaCreatedSpecialist = await supabase
+      .from("specialists")
+      .insert({
+        username: `${data.firstName} ${data.lastName}`,
+        auth_id: auth?.session?.user.id,
+        payment_provider_customer_id: customerId,
+      })
+      .select()
+      .returns<Specialist[]>();
+
+    if (supaCreatedSpecialist.error || !supaCreatedSpecialist.data.length) {
+      return toast({
+        title: "Erro",
+        description: supaCreatedSpecialist.error?.message,
+      });
+    }
+
+    toast({
+      title: "Conta criada",
+      description: "Sua conta foi criada com sucesso",
+      status: "success",
     });
 
     navigate("/dashboard");
-    toast({
-      title: "Sucesso",
-      description: "Cadastro realizado com sucesso! Bem-vindo(a) ao sistema!",
-    });
   };
 
   return (
@@ -73,76 +110,91 @@ export default function SignUp() {
 
       <div className="flex justify-center">
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-2 gap-4"
-          >
-            <FormField
-              name="firstName"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="firstName">Nome</FormLabel>
-                  <Input
-                    id="firstName"
-                    type="text"
-                    {...field}
-                    placeholder="Seu nome"
-                  />
-                </FormItem>
-              )}
-            />
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                name="firstName"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="firstName">Nome</FormLabel>
+                    <Input
+                      id="firstName"
+                      type="text"
+                      {...field}
+                      placeholder="Seu nome"
+                    />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              name="lastName"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="lastName">Sobrenome</FormLabel>
-                  <Input
-                    id="lastName"
-                    type="text"
-                    {...field}
-                    placeholder="Seu sobrenome"
-                  />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="email"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="email">Email</FormLabel>
-                  <Input
-                    id="email"
-                    type="email"
-                    {...field}
-                    placeholder="Seu email"
-                  />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              name="password"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="password">Senha</FormLabel>
-                  <Input
-                    id="password"
-                    type="password"
-                    {...field}
-                    placeholder="Sua senha"
-                  />
-                </FormItem>
-              )}
-            />
-
+              <FormField
+                name="lastName"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="lastName">Sobrenome</FormLabel>
+                    <Input
+                      id="lastName"
+                      type="text"
+                      {...field}
+                      placeholder="Seu sobrenome"
+                    />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="cpfCnpj"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="cpfCnpj">CPF</FormLabel>
+                    <ReactInputMask
+                      mask="999.999.999-99"
+                      maskChar={null}
+                      placeholder="Seu CPF"
+                      {...field}
+                    >
+                      {/* @ts-expect-error third-party issue */}
+                      {(inputProps) => <Input {...inputProps} />}
+                    </ReactInputMask>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="email"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="email">Email</FormLabel>
+                    <Input
+                      id="email"
+                      type="email"
+                      {...field}
+                      placeholder="Seu email"
+                    />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="password"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="password">Senha</FormLabel>
+                    <Input
+                      id="password"
+                      type="password"
+                      {...field}
+                      placeholder="Sua senha"
+                    />
+                  </FormItem>
+                )}
+              />
+            </div>
             <Button
               type="submit"
-              className="w-full bg-blue-700 hover:bg-blue-600 font-semibold text-md"
+              className="w-full bg-blue-700 hover:bg-blue-600 font-semibold text-md mt-4"
             >
               Criar conta
             </Button>

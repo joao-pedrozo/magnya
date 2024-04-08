@@ -40,6 +40,13 @@ export type Database = {
             referencedRelation: "specialists"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "appointments_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
         ]
       }
       appointments: {
@@ -68,6 +75,13 @@ export type Database = {
           value?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "appointment_recurrency"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "appointments_client_id_fkey"
             columns: ["client_id"]
@@ -251,6 +265,7 @@ export type Database = {
           auth_id: string | null
           created_at: string | null
           id: number
+          payment_provider_customer_id: string
           updated_at: string | null
           username: string | null
           working_hours: unknown[] | null
@@ -260,6 +275,7 @@ export type Database = {
           auth_id?: string | null
           created_at?: string | null
           id?: number
+          payment_provider_customer_id: string
           updated_at?: string | null
           username?: string | null
           working_hours?: unknown[] | null
@@ -269,12 +285,39 @@ export type Database = {
           auth_id?: string | null
           created_at?: string | null
           id?: number
+          payment_provider_customer_id?: string
           updated_at?: string | null
           username?: string | null
           working_hours?: unknown[] | null
           working_hours_id?: number[] | null
         }
         Relationships: []
+      }
+      specialists_subscriptions: {
+        Row: {
+          id: number
+          specialist_id: number | null
+          status: string | null
+        }
+        Insert: {
+          id?: number
+          specialist_id?: number | null
+          status?: string | null
+        }
+        Update: {
+          id?: number
+          specialist_id?: number | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specialists_subscriptions_specialist_id_fkey"
+            columns: ["specialist_id"]
+            isOneToOne: false
+            referencedRelation: "specialists"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       weekdays: {
         Row: {

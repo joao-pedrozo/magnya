@@ -6,7 +6,7 @@ O profissional pode enviar comunicações aos clientes, como lembretes de consul
 
 ## TODO
 
-- Auth
+- CPF errado validation
 - Mobile design
 - Fix warnings in tables and forms
 - Add client alteration
