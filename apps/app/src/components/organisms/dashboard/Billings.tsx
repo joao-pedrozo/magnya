@@ -1,22 +1,5 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Ellipsis } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SectionTitle from "@/components/atoms/SectionTitle";
-import { Badge } from "@/components/ui/badge";
-import AppointmentStatusBadge from "@/components/atoms/AppointmentStatusBadge";
 import ClientBillingStatusBadge from "@/components/atoms/ClientBillingStatusBadge";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/supabase";
@@ -61,10 +44,7 @@ export default function Billings() {
             <span className="font-semibold mb-1">Pedro Santos</span>
             <span>
               <span className="text-gray-500">Data: </span>
-              {formatDate(
-                billing.appointments.scheduled_date,
-                billing.appointments.scheduled_date
-              )}
+              {formatDate(billing.appointments.scheduled_date)}
             </span>
             <span>
               <span className="text-gray-500">Valor:</span> R$ 100,00
