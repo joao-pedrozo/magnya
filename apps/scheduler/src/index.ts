@@ -30,6 +30,7 @@ cron.schedule("*/5 * * * * *", async () => {
     appointment_id: completedAppointment.appointment_id,
     amount: completedAppointment.value,
     payment_status: "pending",
+    specialist_id: completedAppointment.specialist_id,
   }));
 
   const createBillings = async () =>

@@ -9,7 +9,6 @@ import {
   CalendarDays,
   Users,
   DollarSign,
-  Clock,
 } from "lucide-react";
 import { Button } from "../ui/button";
 
@@ -82,7 +81,7 @@ function SideMenu({ isOpen, setIsOpen, setSelectedMenuItem }: SideMenuProps) {
                 <span className="font-semibold">Cobranças</span>
               </a>
             </li>
-            <li
+            {/* <li
               className="hover:text-blue-600 p-2"
               onClick={() => {
                 setSelectedMenuItem("availability");
@@ -92,7 +91,7 @@ function SideMenu({ isOpen, setIsOpen, setSelectedMenuItem }: SideMenuProps) {
                 <Clock className="ml-[-2px]" />
                 <span className="font-semibold">Disponibilidade</span>
               </a>
-            </li>
+            </li> */}
             <li
               className="hover:text-blue-600 p-2"
               onClick={() => {
