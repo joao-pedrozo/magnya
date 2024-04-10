@@ -21,50 +21,10 @@ import ClientBillingStatusBadge from "@/components/atoms/ClientBillingStatusBadg
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/supabase";
 import { useAuth } from "@/hooks/useAuth";
-import { Billings as BillingsType } from "@/types/supabase";
+import { format } from "date-fns";
 
-const mockClients = [
-  {
-    nome: "John Doe",
-    email: "johndoe@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "123.456.780-9",
-  },
-  {
-    nome: "Alice Smith",
-    email: "alicesmith@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "789.123.780-9",
-  },
-  {
-    nome: "Bob Johnson",
-    email: "bobjohnson@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "987.654.321-0",
-  },
-  {
-    nome: "Emma Davis",
-    email: "emmadavis@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "654.321.987-0",
-  },
-];
-
-const formatDate = (date: string, time: string) => {
-  const dataString = time;
-
-  const data = parseISO(dataString);
-
-  const diaSemana = format(data, "EEEE", {
-    locale: ptBR,
-  });
-
-  const horaMinutos = format(data, "HH:mm");
-
-  const dataFormatada =
-    diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1) + ", " + horaMinutos;
-
-  return dataFormatada;
+const formatDate = (date: string) => {
+  return format(date, "dd/MM/yyyy");
 };
 
 export default function Billings() {
@@ -77,12 +37,10 @@ export default function Billings() {
         .from("billings")
         .select(
           `
-            *,
-            appointments(*)
+            *, appointments(*, clients(*)) 
           `
         )
-        .eq("specialist_id", specialist?.id)
-        .returns<BillingsType[]>(),
+        .eq("specialist_id", specialist?.id),
   });
 
   return (
@@ -102,10 +60,10 @@ export default function Billings() {
           >
             <span className="font-semibold mb-1">Pedro Santos</span>
             <span>
-              <span className="text-gray-500">Horário: </span> 11/03/2024 23:23
+              <span className="text-gray-500">Data: </span>
               {formatDate(
-                client.client_schedulingtime[0].scheduled_date,
-                client.client_schedulingtime[0].scheduled_time
+                billing.appointments.scheduled_date,
+                billing.appointments.scheduled_date
               )}
             </span>
             <span>
