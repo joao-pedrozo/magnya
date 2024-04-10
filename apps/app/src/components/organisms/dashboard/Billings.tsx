@@ -1,50 +1,31 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Ellipsis } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SectionTitle from "@/components/atoms/SectionTitle";
-import { Badge } from "@/components/ui/badge";
+import ClientBillingStatusBadge from "@/components/atoms/ClientBillingStatusBadge";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/supabase";
+import { useAuth } from "@/hooks/useAuth";
+import { format } from "date-fns";
 
-const mockClients = [
-  {
-    nome: "John Doe",
-    email: "johndoe@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "123.456.780-9",
-  },
-  {
-    nome: "Alice Smith",
-    email: "alicesmith@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "789.123.780-9",
-  },
-  {
-    nome: "Bob Johnson",
-    email: "bobjohnson@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "987.654.321-0",
-  },
-  {
-    nome: "Emma Davis",
-    email: "emmadavis@mail.com",
-    phone: "(41) 9 9823-4666",
-    CPF: "654.321.987-0",
-  },
-];
+const formatDate = (date: string) => {
+  return format(date, "dd/MM/yyyy");
+};
 
 export default function Billings() {
+  const { specialist } = useAuth();
+
+  const billings = useQuery({
+    queryKey: ["billings"],
+    queryFn: async () =>
+      await supabase
+        .from("billings")
+        .select(
+          `
+            *, appointments(*, clients(*)) 
+          `
+        )
+        .eq("specialist_id", specialist?.id),
+  });
+
   return (
     <div>
       <SectionTitle
@@ -52,58 +33,42 @@ export default function Billings() {
         subtitle="Aqui você pode acompanhar e gerenciar todas as cobranças de seus clientes."
         className="mb-4"
       />
-      <Table className="border rounded-xl border-separate border-spacing-x-[12px] border-spacing-y-[8px]">
-        <TableHeader>
-          <TableRow>
-            <TableHead className="text-zinc-500 font-medium text-nowrap">
-              Código
-            </TableHead>
-            <TableHead className="text-zinc-500 font-medium text-nowrap">
-              Nome do cliente
-            </TableHead>
-            <TableHead className="text-zinc-500 font-medium text-nowrap">
-              Data de emissão
-            </TableHead>
-            <TableHead className="text-zinc-500 font-medium text-nowrap">
-              Valor
-            </TableHead>
-            <TableHead className="text-zinc-500 font-medium text-nowrap">
-              Status
-            </TableHead>
-            <TableHead className="text-zinc-500 font-medium text-nowrap">
-              Ações
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {mockClients.map((client) => (
-            <TableRow key={client.CPF} className="text-black text-nowrap">
-              <TableCell className="font-medium text-nowrap">0001</TableCell>
-              <TableCell className="text-nowrap">{client.nome}</TableCell>
-              <TableCell className="text-nowrap">04/04/2024</TableCell>
-              <TableCell className="text-nowrap">R$ 120,00</TableCell>
-              <TableCell className="text-nowrap">
-                <Badge className="bg-green-600 hover:bg-green-700">Pago</Badge>
-              </TableCell>
-              <TableCell className="text-nowrap">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <span className="sr-only">Open menu</span>
-                      <Ellipsis className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>Ver detalhes</DropdownMenuItem>
-                    <DropdownMenuItem>Marcar como pago</DropdownMenuItem>
-                    <DropdownMenuItem>Cancelar cobrança</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+
+      {billings.isLoading && <p>Carregando...</p>}
+      {billings.data?.data &&
+        billings.data.data.map((billing) => (
+          <div
+            key={billing.billing_id}
+            className="border p-4 mt-6 rounded-lg flex flex-col"
+          >
+            <span className="font-semibold mb-1">Pedro Santos</span>
+            <span>
+              <span className="text-gray-500">Data: </span>
+              {formatDate(billing.appointments.scheduled_date)}
+            </span>
+            <span>
+              <span className="text-gray-500">Valor:</span> R$ 100,00
+            </span>
+            <span>
+              <span className="text-gray-500">Status:</span>{" "}
+              <ClientBillingStatusBadge variant="paid" />
+            </span>
+            <div className="flex gap-2 mt-3">
+              <Button
+                className="w-full bg-blue-600 hover:bg-blue-700"
+                size="sm"
+              >
+                Ver detalhes
+              </Button>
+              <Button
+                className="w-full bg-green-800 hover:bg-green-900"
+                size="sm"
+              >
+                Marcar como pago
+              </Button>
+            </div>
+          </div>
+        ))}
     </div>
   );
 }
