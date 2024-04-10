@@ -1,5 +1,4 @@
 import SectionTitle from "@/components/atoms/SectionTitle";
-import TableData from "./components/TableData";
 import AppointmentsListing from "./components/AppointmentsListing";
 
 export default function Agenda() {
